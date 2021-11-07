@@ -1,0 +1,336 @@
+html{
+	transition: all 1s ease-in-out;
+	overflow-y: overlay;/*for scrollbar absolute positioning*/
+}
+body{
+	margin: 0;
+	font-family: Verdana;
+	justify-content: center;align-content: center;align-items: center;text-align: center;
+	background-color: gainsboro;
+}
+a{text-decoration: none;}
+textarea{font-family: Verdana;}
+::-webkit-scrollbar{
+	width: 10px;border-radius: 10px;
+}
+::-webkit-scrollbar-thumb{
+	background: rgba(170,90,220,1);
+}
+::-webkit-scrollbar-track{
+	background: rgba(200,200,200,0.7);
+}
+::-webkit-scrollbar-thumb:hover{
+	background: rgba(70,50,120,1);
+}
+.loaderButton{
+	height:20px;width: 20px;background-color: green;animation: rotate 1s infinite linear;margin: auto;padding: auto; 
+}
+/*Login Page*/
+#loginForm, #signupForm{animation: fade 1s ease-in-out;}
+#signupForm{display: none;}/*Hidden by default*/
+.errorMessage{color: red;}
+.successMessage{color: green;}
+.bufferMessage{color: blue;}
+.headingName{font-size: x-large;margin: 0px 0px 15px 0px;}
+#loginButton, #signupButton, #toggleSignupButton, #toggleLoginButton{
+	border: none;
+	font-size: medium;
+	color: white;background-color: rgba(20, 110, 20, 0.8);
+	padding: 10px;border-radius: 10px;margin: 5px;
+	width: 100px;
+	cursor: pointer;
+}
+#loginButton:hover, #signupButton:hover{background-color: rgba(20, 110, 20, 1.0);}
+#toggleSignupButton, #toggleLoginButton{
+	background-color: rgba(70, 30, 120, 0.7);
+}
+#toggleSignupButton:hover, #toggleLoginButton:hover{background-color: rgba(70, 30, 120, 1.0);}
+#headerLoginPage{
+	position: fixed;left: 0;right: 0;top: 0;
+	display: flex;justify-content: center;
+	align-items: center;align-content: center;
+	margin: 0;padding: 20px 10px;
+	background-color: grey;color: white;
+	box-shadow: 0 0 10px 3px rgba(50, 50, 50, 1.0);z-index: 3;
+}
+.inputStyleLoginPage{
+	transform: scale(1.2);
+	border: none;
+	background-color: rgba(220, 220, 220, 0.7);
+	padding: 10px;margin: 5px;
+	border-radius: 5px;
+}
+/*Home Page*/
+#editExpensesOuterDiv, #deleteExpensesOuterDiv, #profileOuterDiv, #editProfileOuterDiv{
+	position: fixed;top: 0;left: 0;right: 0;
+	width: 100%;height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	z-index: 2;
+}
+#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
+	position: fixed;
+	top: 10%;left: 25%;
+	width: 50%;max-height: 50%;
+	padding: 20px;border-radius: 10px;
+	background-color: rgba(240, 240, 240, 1.0);
+}
+#header{
+	position: fixed;left: 0;right: 0;top: 0;
+	display: flex;justify-content: center;
+	align-items: center;align-content: center;
+	margin: 0;padding: 20px 10px;
+	background-color: grey;color: white;
+	box-shadow: 0 0 10px 3px rgba(50, 50, 50, 1.0);z-index: 3;
+}
+#headerName{
+	font-size: large;
+	cursor: pointer;
+}
+#logoutButton, .closeButton, #aboutButton, #aboutLoginButton{
+	text-decoration: none;border: none;
+	color: white;background-color: rgba(255, 69, 0, 0.8);
+	padding: 10px;border-radius: 10px;
+	cursor: pointer;
+}
+#logoutButton{
+	position: absolute;right: 20px;top: 10px;
+	color: white;background-color: rgba(255, 69, 0, 0.0);
+}
+#aboutLoginButton{
+	position: absolute;right: 20px;top: 10px;
+}
+#aboutLoginButton:hover{
+	background-color: rgba(255, 69, 0, 1.0);	
+}
+#aboutButton{
+	position: absolute;left: 20px;top: 10px;	
+	color: white;background-color: rgba(59, 69, 79, 0.0);
+}
+#aboutButton:hover{color: white;background-color: rgba(59, 69, 79, 0.8);}
+#logoutButton:hover{background-color: rgba(255, 69, 0, 1.0);}
+.closeButton{background-color: rgba(255, 0, 0, 0.8);}
+.closeButton:hover{background-color: rgba(255, 0, 0, 1);}
+.confirmButton{background-color: rgba(0, 180, 0, 0.8);}
+.confirmButton:hover{background-color: rgba(0, 180, 0, 1);}
+#content{
+	width: 50%;
+	margin: auto;margin-top: 60px;
+}
+#contentDashboard, #contentExpenseForm, #contentIncomeForm, #contentGreetings, #contentLogin, #contentAbout{
+	background-color: rgba(245, 245, 245, 1.0);
+	border-radius: 10px;
+	padding: 20px 10px 10px 10px;
+	margin: 10px;
+}
+#contentGreetings{
+	padding: 10px;
+	background-color: rgba(70, 50, 170, 1.0);color: white;
+	animation: fadeWithDelayDown 0.5s ease-in-out;
+	border-radius: 0px 0px 20px 20px;
+	cursor: pointer;
+}
+#contentDashboard{animation: fadeWithDelay 1.3s ease-in-out;}
+#contentExpenseForm{animation: fadeWithDelay 2.5s ease-in-out;}
+#contentIncomeForm{animation: fadeWithDelay 3s ease-in-out;}
+#contentAbout{animation: fadeWithDelay 1s ease-in-out;}
+#dashBoard{
+	display: flex;
+	justify-content: center;align-content: center;align-items: center;
+}
+#dashBoardExpense, #dashBoardIncome, #dashBoardBudget{
+	background-color: rgba(255, 255, 255, 1.0);
+	box-shadow: 0 0 5px 1px rgba(150, 150, 150, 1.0);
+	border-radius: 10px;border: none;
+	font-size: medium;
+	padding: 20px 10px;margin: 10px;
+	cursor: pointer;
+}
+#dashBoardExpense:hover, #dashBoardIncome:hover, #dashBoardBudget:hover{
+	box-shadow: 0 0 10px 2px rgba(150, 150, 150, 1.0);
+}
+#dashBoardExpense:focus, #dashBoardIncome:focus, #dashBoardBudget:focus{
+	background-color: rgba(240, 240, 240, 1.0);
+}
+#dashBoardBudget{
+	display: inline-flex;
+}
+.inputStyle{
+	border: none;
+	background-color: rgba(220, 220, 220, 0.7);
+	padding: 10px;margin: 5px;
+	font-size: large;
+	border-radius: 5px;
+}
+.submitButton{
+	font-size: large;
+	padding: 10px;
+	border: none;border-radius: 10px;
+	background-color: rgba(90, 50, 150, 0.8);color: white;
+	cursor: pointer;
+}
+.submitButton:hover{background-color: rgba(90, 50, 150, 1.0);}
+.expensesList, .incomesList, .expensesListHeading, .expensesListMainHeading, .expensesSubList, .expensesSubLowerList, .expensesSearchList, .budgetList{
+	background-color: rgba(230, 230, 230, 1.0);
+	border-radius: 10px;
+	margin: 5px;padding: 10px;
+	text-align: left;
+	display: flex;justify-content: space-between;
+	cursor: pointer;
+}
+.expensesListMainHeading{
+	background-color: rgba(70, 50, 170, 1.0);color: white;
+}
+.expensesListHeading{
+	background-color: rgba(100, 80, 200, 1.0);color: white;
+}
+.expensesList{
+	background-color: rgba(230, 210, 210, 1.0);
+}
+.expensesList:hover{
+	background-color: rgba(200, 180, 180, 1.0);
+}
+.incomesList{
+	background-color: rgba(210, 230, 210, 1.0);
+}
+.incomesList:hover{
+	background-color: rgba(180, 200, 180, 1.0);
+}
+.expensesSubList{
+	background-color: rgba(230, 230, 230, 1.0);
+}
+.expensesSubList:hover{
+	background-color: rgba(210, 210, 210, 1.0);
+}
+.expensesSubLowerList{
+	background-color: rgba(250, 250, 250, 1.0);
+	cursor: text;
+}
+.budgetList, .expensesSearchList{
+	background-color: rgba(210, 210, 230, 1.0);
+	cursor: text;	
+}
+.listHeadingName, .listMainHeadingName{font-size: large;margin-top: auto;margin-bottom: auto;}
+.listMainHeadingName{font-size: x-large;}
+.expensesEditButton, .expensesDeleteButton, .editButton{
+	border: none;cursor: pointer;
+	border-radius: 10px;
+	background-color: rgba(160, 160, 160, 0.8);color: white;
+	padding: 7px;
+	font-size: medium;
+}
+.editButton{margin: 5px;}
+.expensesEditButton:hover, .editButton:hover{background-color: rgba(140, 140, 140, 1.0);}
+.expensesDeleteButton{background-color: rgba(180, 40, 40, 0.8);}
+.expensesDeleteButton:hover{background-color: rgba(200, 40, 40, 1.0);}
+#incomeListDiv, #expensesListDiv, #budgetListDiv{
+	animation: fadeZoom 1s ease-in-out;
+	max-height: 1000px;
+	overflow: auto;
+}
+.arrowDiv{
+	display: flex;padding: 0 10px;
+}
+.rightArrow, .rightDoubleArrow{
+	width: 10px; height: 10px;margin: 5px 10px;
+	border-right: 4px solid rgba(100, 100, 100, 1.0);border-bottom: 4px solid rgba(100, 100, 100, 1.0);
+	transform: rotate(-45deg);
+}
+.rightDoubleArrow{
+	margin: 5px 0;
+}
+#utilityDiv{
+	display: flex;
+	justify-content: center;
+	background-color: rgba(240, 240, 240, 1.0);
+	padding: 5px;border-radius: 10px;
+}
+.searchButton{
+	border: none;border-radius: 10px;
+	padding: 10px 20px;margin: 10px;
+	font-size: medium;
+	cursor: pointer;
+	background-color: rgba(200, 200, 200, 0.5);opacity: 0.7;
+}
+#searchDiv, #filterDiv{
+	display: none;
+	padding: 10px;
+	animation: fadeZoom1 1s ease-in-out;
+	max-height: 10000px;
+	overflow: auto;
+	background-color: rgba(235, 235, 235, 1.0);border-radius: 10px;
+}
+#filterContentDiv, #searchContentDiv{
+	background-color: rgba(220, 240, 240, 1.0);
+	text-align: left;
+	border-radius: 10px;
+}
+#filterHeadingDiv, #searchHeadingDiv{
+	padding: 10px 20px;
+}
+#searchResults{
+	animation: fadeZoom1 1s ease-in-out;
+	max-height: 1000px;
+	overflow: auto;
+}
+.searchButton:hover{
+	background-color: rgba(150, 150, 150, 1.0);color: white;opacity: 1;
+}
+.searchBar, .filterInputDate{
+	padding: 10px;margin: 5px;
+	background-color: rgba(220, 220, 220, 1.0);
+	font-size: medium;
+	border-radius: 10px;border: none;
+	font-family: Verdana;
+}
+.searchBar{
+	width: 80%;
+}
+.filterInputs{display: inline-block;}
+.expenseErrorMessage, .incomeErrorMessage{margin: 5px;}
+#footer{
+	margin-top: 500px;box-shadow: 0 0 5px 2px grey;background-color: rgba(70, 50, 180, 0.3);width: 100%;padding: 50px 0;
+}
+.coolButtonFooter{
+	display: inline-block;color: black;padding: 5px;border-radius: 10px;cursor: pointer;
+}
+.coolButtonFooter:hover{background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));color: white;}
+
+@keyframes fade{
+	0%{opacity: 0;}
+	100%{opacity: 1;}
+}
+@keyframes fadeZoom{
+	0%{opacity: 0;max-height: 70px;}
+	100%{opacity: 1;}
+}
+@keyframes fadeZoom1{
+	0%{opacity: 0;max-height: 0px;}
+	100%{opacity: 1;}
+}
+@keyframes fadeWithDelay{
+	0%{opacity: 0;}
+	50%{opacity: 0;}
+	100%{opacity: 1;}
+}
+@keyframes fadeWithDelayDown{
+	0%{opacity: 0;}
+	50%{opacity: 0;margin-top: -100px}
+	100%{opacity: 1;}
+}
+@keyframes rotate{
+  0%{transform: rotate(0deg);background-color: limegreen;}
+  50%{transform: rotate(180deg);background-color: orangered;border-radius: 50%;opacity: 0.5;}
+  100%{transform: rotate(360deg);background-color: limegreen;}
+}
+
+/*Mobile View*/
+@media only screen and (max-width: 960px){
+	#content{width: 100%;}
+	.searchButton{padding: 5px;margin: 2px;}
+	#footerDiv{width: 100%;}
+	#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
+		width: 70%;
+		left: 10%;
+	}
+	.editButton{padding: 5px;font-size: small;}
+}
