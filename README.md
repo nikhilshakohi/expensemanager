@@ -2,22 +2,14 @@
 Simple Web based Daily Expense Manager for managing all transactions
 
 <h4>About Site:</h4>
-<li style="list-style-type:circle">Expense Manager is a utility site for maintaining and managing Money related data developed using </li>
-<div style="display:flex;">
-  <div style="width:20%"></div>
-  <div style="width:30%">
+<b>Expense Manager is a utility site for maintaining and managing Money related data developed using :</b>
     <li>HTML</li>
     <li>CSS</li>
     <li>Vanilla JS</li>
-  </div>
-  <div style="width:30%">
     <li>AJAX</li>
     <li>PHP</li>
     <li>SQL</li>
-  </div>
-  <div style="width:20%"></div>
-</div><br>
-<li style="list-style-type:circle">Source code is available at <a style="color:blue" target="_blank" href="https://github.com/nikhilshakohi/expensemanager">Expense Manager.</a></li>
+<br>
 <li style="list-style-type:circle">AJAX functionality is used at adding expenses, editing expenses, deleting expenses, fetching data without refreshing the page.</li>
 <h4>Functionalities:</h4>
   <div style="padding:0 20px">
@@ -32,6 +24,3 @@ Simple Web based Daily Expense Manager for managing all transactions
     <li>User can find the source code in the github link provided.</li>
     <li>Device friendly Interface.</li>
   </div>
-<h4>About the developer:</h4>
-<li style="list-style-type:circle">Developed by <a style="color:blue" target="_blank" href="https://github.com/nikhilshakohi">Nikhil Shakohi.</a></li>
-<br><br><br>
