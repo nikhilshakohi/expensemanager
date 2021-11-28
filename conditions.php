@@ -2,6 +2,7 @@
 
 include_once 'db.php';
 session_start();
+date_default_timezone_set('Asia/Kolkata');
 /*if(!isset($_SESSION['id'])){echo '<script>window.location.href="index.php"</script>';}*//*To redirect to login page when not logged in*/
 
 /*Signup*/
@@ -63,6 +64,47 @@ if(isset($_POST['addExpense'])){
 	echo number_format($totalIncome); 
 	echo '-period-';
 	echo number_format($totalBudget);
+	/*Get Marquee Outputs*/
+
+	/*Calculate Today Expenses*/
+	$todayDate = date('Y-m-d',time());
+	$yesterdayDate = date('Y-m-d', strtotime("-1 days"));
+	$thisMonth = date('m',time());
+	$thisYear = date('Y',time());
+	$totalTodayExpenses = 0; $totalTodayIncome = 0;
+	$totalYesterdayExpenses = 0; $totalYesterdayIncome = 0;
+	$totalThisMonthExpenses = 0; $totalThisMonthIncome = 0;
+	$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getTodayExpenseCount)>0){while($rowTodayExpense = mysqli_fetch_assoc($getTodayExpense)){$totalTodayExpenses = $rowTodayExpense['todayExpense'];}}
+
+	/*Calculate Today Incomes*/
+	$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getTodayIncomeCount)>0){while($rowTodayIncome = mysqli_fetch_assoc($getTodayIncome)){$totalTodayIncome = $rowTodayIncome['todayIncome'];}}
+
+	/*Calculate Yesterday Expenses*/
+	$getYesterdayExpense = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+	$getYesterdayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getYesterdayExpenseCount)>0){while($rowYesterdayExpense = mysqli_fetch_assoc($getYesterdayExpense)){$totalYesterdayExpenses = $rowYesterdayExpense['yesterdayExpense'];}}
+
+	/*Calculate Yesterday Incomes*/
+	$getYesterdayIncome = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+	$getYesterdayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getYesterdayIncomeCount)>0){while($rowYesterdayIncome = mysqli_fetch_assoc($getYesterdayIncome)){$totalYesterdayIncome = $rowYesterdayIncome['yesterdayIncome'];}}
+
+	/*Calculate Month's Expenses*/
+	$getThisMonthExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+	$getThisMonthExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+	if(mysqli_num_rows($getThisMonthExpenseCount)>0){while($rowThisMonthExpense = mysqli_fetch_assoc($getThisMonthExpense)){$totalThisMonthExpenses = $rowThisMonthExpense['thisMonthExpense'];}}
+
+	/*Calculate Month's Incomes*/
+	$getThisMonthIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthIncome FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+	$getThisMonthIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+	if(mysqli_num_rows($getThisMonthIncomeCount)>0){while($rowThisMonthIncome = mysqli_fetch_assoc($getThisMonthIncome)){$totalThisMonthIncome = $rowThisMonthIncome['thisMonthIncome'];}}
+	echo '-period-'.number_format($totalTodayExpenses).'-period-'.number_format($totalTodayIncome).
+	'-period-'.number_format($totalYesterdayExpenses).'-period-'.number_format($totalYesterdayIncome).
+	'-period-'.number_format($totalThisMonthExpenses).'-period-'.number_format($totalThisMonthIncome);
 }
 
 /*Show Expenses*/
@@ -74,6 +116,7 @@ if(isset($_POST['showExpense'])){
 		echo '<div id = "expensesListDiv">
 			 <div class = "expensesListMainHeading">
 				<div class = "listMainHeadingName">'.ucwords($changeType).' Details</div>
+				<div id = "loaderOf'.$changeType.'"></div>
 				<div class = "closeButton" onclick = "hideListDivs()">Close</div>
 			</div>';
 			/*Month-Wise Expese*/
@@ -113,7 +156,7 @@ if(isset($_POST['showExpense'])){
 			}
 		echo '</div>';
 	}else{
-		echo 'Something went wrong!';
+		echo 'No expenses added!';
 	}
 }
 
@@ -123,7 +166,7 @@ if(isset($_POST['checkSubExpense'])){
 	$listType = $_POST['listType'];
 	$month = $_POST['month'];
 	$year = $_POST['year'];
-	$username = $_SESSION['username'];
+	$username = getUsername($conn, $_SESSION['id']);
 
 	$getAllDays = mysqli_query($conn, "SELECT * FROM expenses WHERE type = '$type' AND username = '$username' AND month(date) = '$month' AND year(date) = '$year' ORDER BY date DESC");
 	if(mysqli_num_rows($getAllDays)>0){
@@ -131,11 +174,11 @@ if(isset($_POST['checkSubExpense'])){
 		while ($rowDays = mysqli_fetch_assoc($getAllDays)) {
 			if($checkDate != $rowDays['date']){
 				$rowDay = $rowDays['date'];
-				$rowDayInNumberFormat = strtotime($rowDay);/*Send date in number format*/
+				$rowDayInNumberFormat = strtotime(date('Y-m-d 05:30:00', strtotime($rowDay)));/*Send date in number format*/
 				echo '<div class = "expensesSubList" onclick = "toggleSubLowerListDiv(\''.$type.'\', \''.'All'.'\', \''.$rowDayInNumberFormat.'\')">
 					<div>';
 						/*mktime used to get time details mktime(hour, minute, second, month, date, year)*/
-						echo '&nbsp;'.date('d F Y', strtotime($rowDay)).' - ';
+						echo '&nbsp;'.date('d F Y (D)', strtotime($rowDay)).' - ';
 						/*Get the expense of each day*/
 						$getDayExpenses = mysqli_query($conn, "SELECT SUM(amount) AS dayExpense FROM expenses WHERE date = '$rowDay' AND type = '$type' AND username = '$username' ORDER BY date DESC");
 						if(mysqli_num_rows($getDayExpenses)>0){
@@ -151,7 +194,7 @@ if(isset($_POST['checkSubExpense'])){
 						}
 						
 						$checkDate = $rowDays['date'];
-						$checkDateInNumberFormat = strtotime($checkDate);
+						$checkDateInNumberFormat = strtotime(date('Y-m-d 05:30:00', strtotime($checkDate)));
 				
 					echo '</div>
 					<div id = "loader'.$type.'AllListOfDate'.$checkDateInNumberFormat.'"></div>
@@ -171,14 +214,14 @@ if(isset($_POST['checkSubInnerExpense'])){
 	$type = $_POST['type'];
 	$listType = $_POST['listType'];
 	$dateInNumberFormat = $_POST['date'];
-	$username = $_SESSION['username'];
+	$username = getUsername($conn, $_SESSION['id']);
 
 	$checkDate = date('Y-m-d', $dateInNumberFormat);
 	$getExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE date = '$checkDate' AND username = '$username' AND type = '$type' ORDER BY date DESC, id DESC");
 	while($rowExpenses = mysqli_fetch_assoc($getExpenses)){
 		echo '<div class = "expensesSubLowerList">
 			<div>
-				<span>&nbsp;&nbsp;&nbsp;'.date('d-M-Y', strtotime($rowExpenses['date'])).'</span> 
+				<span>&nbsp;&nbsp;&nbsp;'.date('d-M-Y (D)', strtotime($rowExpenses['date'])).'</span> 
 				- <i>'.ucwords($rowExpenses['category']).'</i> - <b>&#8377;'.number_format($rowExpenses['amount']).'</b>
 				<div>&nbsp;&nbsp;&nbsp;'.$rowExpenses['details'].'</div>
 			</div>
@@ -193,7 +236,7 @@ if(isset($_POST['checkSubInnerExpense'])){
 /*Show Budget*/
 if(isset($_POST['showBudget'])){
 	$username = $_POST['username'];
-	$getBudget = mysqli_query($conn, "SELECT * FROM expenses WHERE username = '$username' ORDER BY id DESC");
+	$getBudget = mysqli_query($conn, "SELECT * FROM expenses WHERE username = '$username' ORDER BY date DESC");
 	if(mysqli_num_rows($getBudget)>0){
 		echo '<div id = "budgetListDiv">
 		<div class = "expensesListHeading">
@@ -204,7 +247,7 @@ if(isset($_POST['showBudget'])){
 			echo '<div class = "budgetList">
 				<div>
 					<span>
-						'.date('d-M-Y', strtotime($rowBudget['date'])).'
+						'.date('d-M-Y (D)', strtotime($rowBudget['date'])).'
 					</span> 
 					- 
 					<i>
@@ -236,7 +279,7 @@ if(isset($_POST['showBudget'])){
 			</div>';
 		}
 	}else{
-		echo 'Something went wrong!';
+		echo 'No expenses added!';
 	}
 	echo '</div>';
 }
@@ -250,7 +293,7 @@ if(isset($_POST['showEditExpenses'])){
 			$category = ucwords($rowExpenses['category']);
 			echo'<div id="editExpensesOuterDiv" ><div id="editExpensesInnerDiv">
 				<h4>Edit Details</h4><hr><br>
-				Date: <textarea id="editExpenseDate'.$rowExpenses['id'].'" type="date" placeholder = "Edit Date"></textarea><br>
+				Date: <br><textarea class = "editTextArea" id="editExpenseDate'.$rowExpenses['id'].'" type="date" placeholder = "Edit Date"></textarea><br><br>
 				<datalist id = "categoryOptions">
 					<option value="food">Food</option>
 					<option value="market">Market</option>
@@ -263,16 +306,16 @@ if(isset($_POST['showEditExpenses'])){
 					<option value="savings">Savings</option>
 					<option value="others">Others</option>
 				</datalist>
-				Category: <textarea id="editExpenseCategory'.$rowExpenses['id'].'" list = "categoryOptions" placeholder = "Edit Category">
-				</textarea><br>
-				Amount: <textarea id="editExpenseAmount'.$rowExpenses['id'].'" placeholder = "Edit Amount"></textarea><br>
-				Details: <textarea id="editExpenseDetails'.$rowExpenses['id'].'" placeholder="Edit Details"></textarea><br><br>
-				<div id="editExpenseErrorMessage"></div><br>
+				Category: <br><textarea class = "editTextArea" id="editExpenseCategory'.$rowExpenses['id'].'" list = "categoryOptions" placeholder = "Edit Category">
+				</textarea><br><br>
+				Amount: <br><textarea class = "editTextArea" id="editExpenseAmount'.$rowExpenses['id'].'" placeholder = "Edit Amount"></textarea><br><br>
+				Details: <br><textarea class = "editTextArea" id="editExpenseDetails'.$rowExpenses['id'].'" placeholder="Edit Details"></textarea><br><br>
+				<div id="editExpenseErrorMessage"></div><br><br>
 				<button class = "confirmButton closeButton" onclick = "confirmEdit('.$expensesId.')">Done</button>
-				<button class = "closeButton" onclick = "hideEditExpense()">Cancel</button>
+				<button class = "closeButton" onclick = "hideEditExpense()">Cancel</button><br><br><br>
 			</div></div>-period-';
 			/*Send data to JS*/
-			echo number_format($rowExpenses['amount']).'-period-'.
+			echo $rowExpenses['amount'].'-period-'.
 			$rowExpenses['category'].'-period-'.
 			$rowExpenses['date'].'-period-'.
 			$rowExpenses['details'];
@@ -317,7 +360,7 @@ if(isset($_POST['showDeleteExpenses'])){
 				Are you sure you want to delete this data?<br><br>
 				<div>Amount: <b>&#8377;'.number_format($rowExpenses['amount']).'</b></div>
 				<div>Category: <b>'.ucwords($rowExpenses['category']).'</b></div>
-				<div>Date: <b>'.date('d-M-Y', strtotime($rowExpenses['date'])).'</b></div>
+				<div>Date: <b>'.date('d-M-Y (D)', strtotime($rowExpenses['date'])).'</b></div>
 				<div>Details: <b>'.$rowExpenses['category'].'</b><br><br></div>
 				<div id="deleteExpenseErrorMessage"></div><br>
 				<button class = "expensesDeleteButton" onclick = "confirmDelete('.$expensesId.')">Delete</button>
@@ -362,16 +405,44 @@ if(isset($_POST['deleteExpenses'])){
 /*Search Expenses*/
 if(isset($_POST['searchExpenses'])){
 	$searchq = mysqli_real_escape_string($conn, $_POST['searchq']);
-	$searchExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE amount LIKE '%$searchq%' OR type LIKE '%$searchq%' OR date LIKE '%$searchq%' OR category LIKE '%$searchq%' OR details LIKE '%$searchq%' ORDER BY date DESC, id DESC");
+	$username = $_POST['username'];
+	$searchExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE (username = '$username') AND (amount LIKE '%$searchq%' OR type LIKE '%$searchq%' OR date LIKE '%$searchq%' OR category LIKE '%$searchq%' OR details LIKE '%$searchq%') ORDER BY date DESC, id DESC");
+	$totalSearchExpenses = mysqli_query($conn, "SELECT SUM(amount) AS searchExpense FROM expenses WHERE (amount LIKE '%$searchq%' OR type LIKE '%$searchq%' OR date LIKE '%$searchq%' OR category LIKE '%$searchq%' OR details LIKE '%$searchq%') AND (type = 'expense') AND (username = '$username') ORDER BY date DESC, id DESC");
+	$totalSearchIncome = mysqli_query($conn, "SELECT SUM(amount) AS searchIncome FROM expenses WHERE (amount LIKE '%$searchq%' OR type LIKE '%$searchq%' OR date LIKE '%$searchq%' OR category LIKE '%$searchq%' OR details LIKE '%$searchq%') AND (type = 'income') AND (username = '$username') ORDER BY date DESC, id DESC");
 	if(mysqli_num_rows($searchExpenses)>0){
 		echo '<div id = "searchContentDiv">
 			<div id = "searchHeadingDiv">'.mysqli_num_rows($searchExpenses).' results have been found with '.$searchq.'<br><br>
-			&#8593; = Income &nbsp;&nbsp;&nbsp; &#8595; = Expense<br>';
+				<div style = "font-size:large">
+					In this search results:<br>';
+					$overallSearchIncome = 0; $overallSearchExpense = 0;
+					if (mysqli_num_rows($totalSearchExpenses)>0) {
+						while($rowSearchExpenseAmount = mysqli_fetch_assoc($totalSearchExpenses)){
+							if($rowSearchExpenseAmount['searchExpense'] != ''){
+								echo '<div> Overall Expense: &#8377;<span class = "errorMessage">'.number_format($rowSearchExpenseAmount['searchExpense']).'</span></div>';
+								$overallSearchExpense = $rowSearchExpenseAmount['searchExpense']; 
+							}
+						}
+					}
+					if (mysqli_num_rows($totalSearchIncome)>0) {
+						while($rowSearchIncomeAmount = mysqli_fetch_assoc($totalSearchIncome)){
+							if($rowSearchIncomeAmount['searchIncome'] != ''){
+								echo '<div> Overall Income: &#8377;<span class = "successMessage">'.number_format($rowSearchIncomeAmount['searchIncome']).'</span></div>';
+								$overallSearchIncome = $rowSearchIncomeAmount['searchIncome'];
+							}
+						}
+					}
+					if ((mysqli_num_rows($totalSearchExpenses)>0) || (mysqli_num_rows($totalSearchIncome)>0)) {
+						$netFlow = $overallSearchIncome - $overallSearchExpense;
+					}
+					echo '<div> Net Flow: &#8377;<span class = "bufferMessage">'.number_format($netFlow).'</span></div>';
+				echo '</div><br><br>
+				&#8593; = Income &nbsp;&nbsp;&nbsp; &#8595; = Expense
+			<div>';
 		while ($rowSearch = mysqli_fetch_assoc($searchExpenses)) {
 			echo '<div class = "expensesSearchList">
 				<div>
 					<span>
-						'.date('d-M-Y', strtotime($rowSearch['date'])).'
+						'.date('d-M-Y (D)', strtotime($rowSearch['date'])).'
 					</span> 
 					- 
 					<i>
@@ -412,9 +483,10 @@ if(isset($_POST['searchExpenses'])){
 if(isset($_POST['filterExpenses'])){
 	$fromDate = mysqli_real_escape_string($conn, $_POST['fromDate']);
 	$toDate = mysqli_real_escape_string($conn, $_POST['toDate']);
-	$filterExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE date BETWEEN '$fromDate' AND '$toDate' ORDER BY date DESC, id DESC");
-	$totalFilterExpenses = mysqli_query($conn, "SELECT SUM(amount) AS filterExpense FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'expense') ORDER BY date DESC, id DESC");
-	$totalFilterIncome = mysqli_query($conn, "SELECT SUM(amount) AS filterIncome FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'income') ORDER BY date DESC, id DESC");
+	$username = $_POST['username'];
+	$filterExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (username = '$username') ORDER BY date DESC, id DESC");
+	$totalFilterExpenses = mysqli_query($conn, "SELECT SUM(amount) AS filterExpense FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'expense') AND (username = '$username') ORDER BY date DESC, id DESC");
+	$totalFilterIncome = mysqli_query($conn, "SELECT SUM(amount) AS filterIncome FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'income') AND (username = '$username') ORDER BY date DESC, id DESC");
 	if(mysqli_num_rows($filterExpenses)>0){
 		echo '<div id = "filterContentDiv">
 			<div id = "filterHeadingDiv">
@@ -442,7 +514,7 @@ if(isset($_POST['filterExpenses'])){
 				echo '<div class = "expensesSearchList">
 					<div>
 						<span>
-							'.date('d-M-Y', strtotime($rowFilter['date'])).'
+							'.date('d-M-Y (D)', strtotime($rowFilter['date'])).'
 						</span> 
 						- 
 						<i>
@@ -554,6 +626,29 @@ if (isset($_POST['confirmEditProfile'])) {
 	}
 }
 
+/*Get Today's data*/
+if(isset($_POST['getExpenseForNotif'])){
+	$todayDate = date('Y-m-d',time());
+	$username = $_POST['username'];
+	/*$yesterdayDate = date('Y-m-d', strtotime("-1 days"));
+	$thisMonth = date('m',time());
+	$thisYear = date('Y',time());*/
+	$totalTodayExpenses = 0; $totalTodayIncome = 0;
+	
+	/*Calculate Today Expenses*/
+	$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getTodayExpenseCount)>0){while($rowTodayExpense = mysqli_fetch_assoc($getTodayExpense)){$totalTodayExpenses = $rowTodayExpense['todayExpense'];}}
+
+	/*Calculate Today Incomes*/
+	$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+	if(mysqli_num_rows($getTodayIncomeCount)>0){while($rowTodayIncome = mysqli_fetch_assoc($getTodayIncome)){$totalTodayIncome = $rowTodayIncome['todayIncome'];}}
+
+	echo $totalTodayExpenses.'-period-'.$totalTodayIncome;
+
+}
+
 /*Income or Expense Checker*/
 function checkIncomeOrExpense($id,$conn){
 	$checkIE = mysqli_query($conn, "SELECT * FROM expenses WHERE id = '$id'");
@@ -588,6 +683,17 @@ function getNewExpenseDetails($conn, $username, $type){
 		}
 	}
 	return $totalExpenses;
+}
+
+/*Get Username*/
+function getUsername($conn, $id){
+	$getUsername = mysqli_query($conn,"SELECT * FROM users WHERE id = '$id'");
+	if(mysqli_num_rows($getUsername)>0){
+		while($rowUsername = mysqli_fetch_assoc($getUsername)){
+			$username = $rowUsername['username'];
+		}
+	}
+	return $username;	
 }
 
 ?>

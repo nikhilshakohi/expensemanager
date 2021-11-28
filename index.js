@@ -5,6 +5,7 @@ function toggleSignIn(formType){
 	document.getElementById("loginErrorMessage").innerHTML = "";
 	/*Form which is to be displayed*/
 	document.getElementById(formType+"Form").style.display = "block";	
+	document.getElementById(formType+"Username").focus();	
 }
 
 /*Show Password*/
@@ -38,13 +39,15 @@ function signup(){
 		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Please Fill in all the fields</span>";
 	}else if(!/^[a-zA-Z0-9 ]+$/.test(username)){ /*Validate expressions*/
 		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Username</span>";
-		document.getElementById("signupUsername").style.border = "1px solid red";
+		document.getElementById("signupUsername").style.border = "3px solid red";
+		document.getElementById("signupUsername").focus();
 	}else if(!/^[a-zA-Z0-9!@#$%^&*]{4,15}$/.test(password)){ /*Validate expressions*/
 		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Password / Minimum 4 charecters are required</span>";
 		document.getElementById("signupPassword").style.border = "1px solid red";
 	}else if(!/^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)){ /*Validate expressions*/
 		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Email not valid</span>";
-		document.getElementById("signupEmail").style.border = "1px solid red";
+		document.getElementById("signupEmail").style.border = "3px solid red";
+		document.getElementById("signupEmail").focus();
 	}else if(!/^[a-zA-Z ]+$/.test(fullName)){ /*Validate expressions*/
 		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Name</span>";
 		document.getElementById("signupFullName").style.border = "1px solid red";
@@ -101,8 +104,10 @@ function login(){
 				if(xhr.status == 200){
 					if(this.responseText == "loginSuccess"){
 						window.location.href = "home.php";
+						document.getElementById("loginButton").innerHTML = "<div class = 'loaderButton'></div>";
+					}else{
+						document.getElementById("loginErrorMessage").innerHTML = this.responseText;
 					}
-					document.getElementById("loginErrorMessage").innerHTML = this.responseText;
 				}
 			}
 		}
@@ -117,7 +122,7 @@ function addExpense(type){
 	var expenseCategory = document.getElementById(type+"Category").value;
 	var expenseDetails = document.getElementById(type+"Details").value;
 	var expenseUsername = document.getElementById(type+"Username").value;
-	document.getElementById(type+"Submit").innerHTML = "<div class='loaderButton'></div>";
+	document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
 	/*Validation*/
 	if((expenseAmount == '') || (expenseDate == '') || (expenseCategory == '')){
 		document.getElementById(type+"ErrorMessage").innerHTML = "<span class='errorMessage'>Fill in the required fields</span>";
@@ -137,11 +142,22 @@ function addExpense(type){
 			if(xhr.readyState == 4){
 				if(xhr.status == 200){
 					eachResponse = this.responseText.split("-period-");/*Get two Messages from server*/
-					document.getElementById(type+"ErrorMessage").innerHTML = "<div class='loaderButton'></div>";
-					setTimeout(function(){document.getElementById(type+"ErrorMessage").innerHTML = eachResponse[0];},500);
-					setTimeout(function(){document.getElementById(type+"ErrorMessage").innerHTML = "";},2500);
+					/*document.getElementById(type+"ErrorMessage").innerHTML = "<div class='loaderButton'></div>";*/
+					document.getElementById(type+"ErrorMessage").innerHTML = eachResponse[0];
+					document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
+					setTimeout(function(){document.getElementById(type+"Submit").innerHTML = "Submit";},500);
+					setTimeout(function(){document.getElementById(type+"ErrorMessage").innerHTML = "";},2000);
 					document.getElementById("newExpense").innerHTML = eachResponse[1];
+					document.getElementById("newIncome").innerHTML = eachResponse[2];
 					document.getElementById("newBudget").innerHTML = eachResponse[3];
+					/*Marquee Inputs*/
+					if(document.getElementById("marqueeTodayExpense")){document.getElementById("marqueeTodayExpense").innerHTML = "-&#8377;"+eachResponse[4];}
+					if(document.getElementById("marqueeTodayIncome")){document.getElementById("marqueeTodayIncome").innerHTML = "+&#8377;"+eachResponse[5];}
+					if(document.getElementById("marqueeYesterdayExpense")){document.getElementById("marqueeYesterdayExpense").innerHTML = "-&#8377;"+eachResponse[6];}
+					if(document.getElementById("marqueeYesterdayIncome")){document.getElementById("marqueeYesterdayIncome").innerHTML = "+&#8377;"+eachResponse[7];}
+					if(document.getElementById("marqueeThisMonthExpense")){document.getElementById("marqueeThisMonthExpense").innerHTML = "-&#8377;"+eachResponse[8];}
+					if(document.getElementById("marqueeThisMonthIncome")){document.getElementById("marqueeThisMonthIncome").innerHTML = "+&#8377;"+eachResponse[9];}
+					
 					/*Clear Form*/
 					var clearInputs = document.getElementsByClassName(type+"Input");
 					for(var i = 0; i < clearInputs.length; i++){
@@ -175,15 +191,36 @@ function showExpenses(changeType){
 				if(document.getElementById("budgetListDiv")){document.getElementById("budgetListDiv").innerHTML = "";}
 				if(document.getElementById("incomeListDiv")){document.getElementById("incomeListDiv").innerHTML = "";}
 				if(document.getElementById("expenseListDiv")){document.getElementById("expenseListDiv").innerHTML = "";}
-				document.getElementById("expenseDetailsDiv").innerHTML = "";			
-				document.getElementById("incomeDetailsDiv").innerHTML = "";			
-				document.getElementById("filterDiv").style.display = "none";
-				document.getElementById("searchDiv").style.display = "none";
+				if(document.getElementById("expenseDetailsDiv")){document.getElementById("expenseDetailsDiv").innerHTML = "";}			
+				if(document.getElementById("incomeDetailsDiv")){document.getElementById("incomeDetailsDiv").innerHTML = "";}	
+				if(document.getElementById("budgetDetailsDiv")){document.getElementById("budgetDetailsDiv").innerHTML = "";}	
+				if(document.getElementById("filterDiv")){document.getElementById("filterDiv").style.display = "none";}
+				if(document.getElementById("searchDiv")){document.getElementById("searchDiv").style.display = "none";}
 
+				document.body.scrollTop = document.documentElement.scrollTop = 0;	
 				document.getElementById(changeType+"DetailsDiv").innerHTML = this.responseText;			
 			}
 		}
 	}
+}
+
+/*Show Individual Expense*/
+function showIndividualExpenses(type, month, year, day, amount){
+	/*Remove leading 0 from month*/
+	if(month<10){
+		month = month / 10;
+		month = month * 10;
+	}
+	showExpenses(type);
+	if(amount > 0){
+		setTimeout(function(){document.getElementById("loaderOf"+type).innerHTML = "<div class = 'loaderButton'></div>";},1000)
+		setTimeout(function(){toggleSubListDiv(type, 'Day', month, year);},2000);
+		if(day != 'thisIsMonth'){
+			/*Added for Debugging*//*document.getElementById("contentGreetings").innerHTML = document.getElementById("contentGreetings").innerHTML+"loader"+type+'All'+"ListOfDate"+day;*/
+			setTimeout(function(){toggleSubLowerListDiv(type, 'All', day);},3000);
+		}
+	}
+	setTimeout(function(){document.getElementById("loaderOf"+type).innerHTML = "";},3200)
 }
 
 /*Show Income*/
@@ -233,9 +270,14 @@ function showBudget(){
 			if(xhr.status == 200){
 				if(document.getElementById("expensesListDiv")){document.getElementById("expensesListDiv").innerHTML = "";}
 				if(document.getElementById("incomeListDiv")){document.getElementById("incomeListDiv").innerHTML = "";}
+				if(document.getElementById("budgetListDiv")){document.getElementById("budgetListDiv").innerHTML = "";}
+				if(document.getElementById("expenseDetailsDiv")){document.getElementById("expenseDetailsDiv").innerHTML = "";}			
+				if(document.getElementById("incomeDetailsDiv")){document.getElementById("incomeDetailsDiv").innerHTML = "";}	
+				if(document.getElementById("budgetDetailsDiv")){document.getElementById("budgetDetailsDiv").innerHTML = "";}	
 				document.getElementById("filterDiv").style.display = "none";
 				document.getElementById("searchDiv").style.display = "none";
 
+				document.body.scrollTop = document.documentElement.scrollTop = 0;	
 				document.getElementById("budgetDetailsDiv").innerHTML = this.responseText;			
 			}
 		}
@@ -454,6 +496,7 @@ function toggleSubListDiv(type, listType, month, year){
 function toggleSubLowerListDiv(type, listType, dateInNumberFormat){
 	var requiredDiv = document.getElementById(type+listType+"ListOfDate"+dateInNumberFormat);
 	var requiredDivLoader = document.getElementById("loader"+type+listType+"ListOfDate"+dateInNumberFormat);
+	/*Added for Debugging*//*document.getElementById("contentGreetings").innerHTML = document.getElementById("contentGreetings").innerHTML+"loader"+type+listType+"ListOfDate"+dateInNumberFormat;*/
 	requiredDivLoader.innerHTML = "<div class = 'loaderButton'></div>";
 	/*AJAX Functionality*/
 	/*Declare variables*/
@@ -490,9 +533,21 @@ function showFilters(type){
 		document.getElementById(type+"Div").style.display = "block";
 		if(type == 'search'){
 			document.getElementById("searchInput").focus();
+			/*Enter to search*/
+			var searchEnter = document.getElementById('searchInput');
+			searchEnter.addEventListener("keyup", function(event){
+				if(event.keyCode == 13){
+					event.preventDefault();getSearchResults();
+				}
+			})
 		}else if(type == 'filter'){
 			document.getElementById("filterFromDate").focus();
 		}
+		/*To prevent automatic scroll while focussing*/
+		/*var x = window.scrollX; var y = window.scrollY;
+		window.scrollTo(x,y);*/
+		document.body.scrollTop = document.documentElement.scrollTop = 0;	
+
 	}
 	document.getElementById("incomeDetailsDiv").innerHTML = ""; /*To clear any previous inputs*/
 	document.getElementById("expenseDetailsDiv").innerHTML = ""; /*To clear any previous inputs*/
@@ -504,11 +559,12 @@ function showFilters(type){
 /*Search Div*/
 function getSearchResults(){
 	var searchq = document.getElementById("searchInput").value;
+	var username = document.getElementById("username").value;
 	document.getElementById("searchResults").innerHTML = "<div class = 'loaderButton'></div>";
 	/*AJAX Functionality*/
 	/*Declare variables*/
 	var searchExpenses = "RandomInput";
-	var data = "searchExpenses="+searchExpenses+"&searchq="+searchq;
+	var data = "searchExpenses="+searchExpenses+"&searchq="+searchq+"&username="+username;
 	/*Declare XML*/
 	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
 	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
@@ -529,11 +585,12 @@ function getSearchResults(){
 function getFilterResults(){
 	var fromDate = document.getElementById("filterFromDate").value;
 	var toDate = document.getElementById("filterToDate").value;
+	var username = document.getElementById("username").value;
 	document.getElementById("filterResults").innerHTML = "<div class = 'loaderButton'></div>";
 	/*AJAX Functionality*/
 	/*Declare variables*/
 	var filterExpenses = "RandomInput";
-	var data = "filterExpenses="+filterExpenses+"&fromDate="+fromDate+"&toDate="+toDate;
+	var data = "filterExpenses="+filterExpenses+"&fromDate="+fromDate+"&toDate="+toDate+"&username="+username;
 	/*Declare XML*/
 	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
 	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
@@ -650,4 +707,99 @@ function confirmEditProfileDetails(type, id){
 			}
 		}
 	}	
+}
+
+/*Open Calculator*/
+function toggleCalc(func){
+	if(func == 'open'){
+		document.getElementById("calcDiv").style.display = "block";
+		document.getElementById("calcOuterDiv").style.display = "block";
+		document.getElementById("calcInput").focus();
+		var searchEnter = document.getElementById('calcInput');
+		searchEnter.addEventListener("keyup", function(event){
+			if(event.keyCode == 13){
+				event.preventDefault();calculate();
+			}
+		})
+	}else{
+		document.getElementById("calcDiv").style.display = "none";
+		document.getElementById("calcOuterDiv").style.display = "none";
+	}
+}
+
+/*Calculator*/
+function calculate(){
+	var query = document.getElementById("calcInput").value;
+
+	/*Validation*/
+	document.getElementById("calcResult").innerHTML = "";
+	if(query == ''){
+		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessage'>No input given.</span>";
+	}else if(!/^[0-9\.\+\-\*\/\%\^\*\(\)]+$/.test(query)){
+		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessage'>Enter a valid input.</span>";
+	}else{
+		var output = eval(query);
+		document.getElementById("calcResult").innerHTML = "Result: <span class = 'successMessage'>"+query+" = "+output+"</span>";
+		document.getElementById("calcInput").value = output;
+	}
+}
+
+/*Calc Help*/
+function putCalc(val){
+	if(val == 'C'){
+		document.getElementById("calcInput").value = "";
+	}else if(val == 'CE'){
+		var newEl = document.getElementById("calcInput").value.slice(0,-1);
+		document.getElementById("calcInput").value = newEl;
+	}else{
+		document.getElementById("calcInput").value = document.getElementById("calcInput").value+val;
+		/*document.getElementById("calcInput").focus();*/
+	}
+}
+
+/*Notifications*/
+function notifyMe() {
+	if (!("Notification" in window)) {
+    	alert("This browser does not support desktop notification");
+  	}else if(Notification.permission === "granted") {
+  		var name = document.getElementById("userFullName").value;
+  		var username = document.getElementById("username").value;
+  		/*AJAX Functionality*/
+		/*Declare variables*/
+		var getExpenseForNotif = "RandomInput";
+		var data = "getExpenseForNotif="+getExpenseForNotif+"&username="+username;
+		/*Declare XML*/
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		/*AJAX Methods*/
+		xhr.open("POST","conditions.php",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					eachResponse = this.responseText.split("-period-");
+					var time = new Date();
+				    if((time.getHours() == 21 && time.getMinutes() == 30 && time.getSeconds() < 1) || (time.getHours() == 10 && time.getMinutes() == 0 && time.getSeconds() < 1)){
+				    	var options = {
+				    		body: "Today's Expenses : ₹"+eachResponse[0]+", Income: ₹"+eachResponse[1],
+				    		vibrate: [200, 100, 200]
+				    	};
+				    	var notification = new Notification("Hi "+name+"! Added all expenses for today?", options);
+				    	notification.onclick = function(event){
+				    		event.preventDefault();
+				    		window.open('home.php');
+				    	}
+				    }
+				}
+			}
+		}
+  	}else if(Notification.permission !== "denied") {
+    	Notification.requestPermission().then(function (permission) {
+    	  	if (permission === "granted") {
+        		var notification = new Notification("Hi there! Daily at 10:00 and 21:30; you will receive a notification, Click on it to fill the day's expenses!");
+    		}
+    	});
+  	}
+  	setTimeout(notifyMe, 1000);
 }

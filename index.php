@@ -7,6 +7,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="google-site-verification" content="M6Wbpyq5eHZattL1_fqsV8HxSLz8T_U1UlUppkvfLtU" /> <!--Google Verification-->
 	<link rel="stylesheet" type="text/css" href="index.css">
 	<script type="text/javascript" src="index.js"></script>
 	<title>Expense Manager</title>
@@ -16,15 +17,15 @@
 		if(!isset($_SESSION['id'])){
 	?>
 		<div id="headerLoginPage">
-			<div id="headerName">Expense Manager</div>
+			<div id="headerName"><span class="headerIconShow">$</span> Expense Manager <span class="headerIconShow">&#9998;</span></div>
 		</div>
-		<div id="content">
+		<div id="content" style="margin-top: 75px;">
 			<div id="contentLogin"><br>
 				<!--Login Form -->
 				<form id="loginForm">
 					<div class="headingName">Welcome Back, Login</div><hr><br><br>
-					<input type="username" id="loginUsername" class="inputStyleLoginPage" placeholder="Username"><br>
-					<input type="password" id="loginPassword" class="inputStyleLoginPage" placeholder="Password"><br>
+					<input type="username" id="loginUsername" class="inputStyleLoginPage" placeholder="Username / E-mail" autofocus autocomplete><br>
+					<input type="password" id="loginPassword" class="inputStyleLoginPage" placeholder="Password" autocomplete><br>
 					<input type="checkBox" id="showLoginPasswordBox" onclick="showPassword('login')">
 					<label for="showLoginPasswordBox">Show Password</label><br>
 					<div id="loginErrorMessage"></div><br>
@@ -34,13 +35,13 @@
 				<!--Signup Form-->
 				<form id="signupForm">
 					<div class="headingName">Hello There, Signup</div><hr><br><br>
-					<input type="username" id="signupUsername" class="inputStyleLoginPage" placeholder="Enter Username"><br>
-					<input type="password" id="signupPassword" class="inputStyleLoginPage" placeholder="Enter Password"><br>
-					<input type="password" id="signupConfirmPassword" class="inputStyleLoginPage" placeholder="Re-Enter Password"><br>
-					<input type="name" id="signupFullName" class="inputStyleLoginPage" placeholder="Name"><br>
-					<input type="email" id="signupEmail" class="inputStyleLoginPage" placeholder="E-Mail"><br>
-					<input type="checkBox" id="showLoginPasswordBox" onclick="showPassword('signup')">
-					<label for="showLoginPasswordBox">Show Password</label><br>
+					<input type="username" id="signupUsername" class="inputStyleLoginPage" placeholder="Enter Username" autocomplete><br>
+					<input type="password" id="signupPassword" class="inputStyleLoginPage" placeholder="Enter Password" autocomplete><br>
+					<input type="password" id="signupConfirmPassword" class="inputStyleLoginPage" placeholder="Re-Enter Password" autocomplete><br>
+					<input type="name" id="signupFullName" class="inputStyleLoginPage" placeholder="Name" autocomplete><br>
+					<input type="email" id="signupEmail" class="inputStyleLoginPage" placeholder="E-Mail" autocomplete><br>
+					<input type="checkBox" id="showSignupPasswordBox" onclick="showPassword('signup')">
+					<label for="showSignupPasswordBox">Show Password</label><br>
 					<div id="signupErrorMessage"></div>
 					<button type="button" id="signupButton" onclick="signup()">SIGNUP</button><br>
 					<input type="button" id="toggleLoginButton" value="LOGIN" onclick="toggleSignIn('login')"><br>

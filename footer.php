@@ -8,7 +8,7 @@
 				<a class="coolButtonFooter" href="index.php">Home</a><br>
 				<?php 
 				if(isset($_SESSION['id'])){
-					echo '<a id="footerProfileButton" class="coolButtonFooter" onclick = "showProfile()">Profile</a><br>';
+					echo '<a id="footerProfileButton" class="coolButtonFooter" href = "#" onclick = "showProfile()">Profile</a><br>';
 				}else{
 					echo '<a id="footerProfileButton" class="coolButtonFooter" href = "index.php">Profile</a><br>';
 				}

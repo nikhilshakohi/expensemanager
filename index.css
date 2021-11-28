@@ -1,5 +1,6 @@
 html{
-	transition: all 1s ease-in-out;
+	transition: background-color 1s ease-in-out, height 1s ease-in-out, width 1s ease-in-out;
+	scroll-behavior: smooth;
 	overflow-y: overlay;/*for scrollbar absolute positioning*/
 }
 body{
@@ -28,9 +29,9 @@ textarea{font-family: Verdana;}
 /*Login Page*/
 #loginForm, #signupForm{animation: fade 1s ease-in-out;}
 #signupForm{display: none;}/*Hidden by default*/
-.errorMessage{color: red;}
-.successMessage{color: green;}
-.bufferMessage{color: blue;}
+.errorMessage{color: red;animation: fade 0.7s ease-in-out;}
+.successMessage{color: green;animation: fade 0.7s ease-in-out;}
+.bufferMessage{color: blue;animation: fade 0.7s ease-in-out;}
 .headingName{font-size: x-large;margin: 0px 0px 15px 0px;}
 #loginButton, #signupButton, #toggleSignupButton, #toggleLoginButton{
 	border: none;
@@ -70,9 +71,10 @@ textarea{font-family: Verdana;}
 #editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
 	position: fixed;
 	top: 10%;left: 25%;
-	width: 50%;max-height: 50%;
+	width: 50%;max-height: 80%;
 	padding: 20px;border-radius: 10px;
 	background-color: rgba(240, 240, 240, 1.0);
+	overflow: auto;
 }
 #header{
 	position: fixed;left: 0;right: 0;top: 0;
@@ -84,8 +86,12 @@ textarea{font-family: Verdana;}
 }
 #headerName{
 	font-size: large;
+	user-select: none;
 	cursor: pointer;
 }
+#headerName:hover{color: palegreen;}
+#headerName:hover .headerIconShow{visibility: visible;}
+.headerIconShow{visibility: hidden;}
 #logoutButton, .closeButton, #aboutButton, #aboutLoginButton{
 	text-decoration: none;border: none;
 	color: white;background-color: rgba(255, 69, 0, 0.8);
@@ -116,11 +122,15 @@ textarea{font-family: Verdana;}
 	width: 50%;
 	margin: auto;margin-top: 60px;
 }
-#contentDashboard, #contentExpenseForm, #contentIncomeForm, #contentGreetings, #contentLogin, #contentAbout{
+#contentDashboard, #contentExpenseForm, #contentIncomeForm, #contentGreetings, #contentLogin, #contentAbout, #contentShortSummaryForm, #dateShow, #contentAnalysisForm, #allDetailsDiv{
 	background-color: rgba(245, 245, 245, 1.0);
 	border-radius: 10px;
 	padding: 20px 10px 10px 10px;
 	margin: 10px;
+}
+#allDetailsDiv{
+	padding: 0;
+	margin: 0 10px;
 }
 #contentGreetings{
 	padding: 10px;
@@ -129,30 +139,62 @@ textarea{font-family: Verdana;}
 	border-radius: 0px 0px 20px 20px;
 	cursor: pointer;
 }
-#contentDashboard{animation: fadeWithDelay 1.3s ease-in-out;}
-#contentExpenseForm{animation: fadeWithDelay 2.5s ease-in-out;}
-#contentIncomeForm{animation: fadeWithDelay 3s ease-in-out;}
+#dateShow{
+	animation: downLater 6s ease-in-out;
+	padding: 0px; margin: -10px 10px 0px 10px; visibility: hidden;
+	background-color: rgba(70, 50, 170, 1.0);color: white;
+	max-height: 0px;
+}
+#contentGreetings:hover{background-color: rgba(50, 30, 150, 1.0);}
+#contentDashboard{animation: Zoom 2s ease-in-out;padding: 0;margin-top: 5px;max-height: 500px;}
+#contentExpenseForm{animation: fadeWithDelay 3.0s ease-in-out;}
+#contentIncomeForm{animation: fadeWithDelay 3.5s ease-in-out;}
+#contentShortSummaryForm{animation: fadeWithDelay 4.0s ease-in-out; }
+#contentAnalysisForm{animation: fadeWithDelay 4.5s ease-in-out;}
 #contentAbout{animation: fadeWithDelay 1s ease-in-out;}
 #dashBoard{
-	display: flex;
+	display: inline-block;
 	justify-content: center;align-content: center;align-items: center;
 }
 #dashBoardExpense, #dashBoardIncome, #dashBoardBudget{
-	background-color: rgba(255, 255, 255, 1.0);
+	/*background-color: rgba(180, 180, 180, 0);
 	box-shadow: 0 0 5px 1px rgba(150, 150, 150, 1.0);
-	border-radius: 10px;border: none;
+	*/border-radius: 10px;border: none;
+	margin: 10px;
 	font-size: medium;
-	padding: 20px 10px;margin: 10px;
 	cursor: pointer;
 }
-#dashBoardExpense:hover, #dashBoardIncome:hover, #dashBoardBudget:hover{
+/*#dashBoardExpense:hover, #dashBoardIncome:hover, #dashBoardBudget:hover{
 	box-shadow: 0 0 10px 2px rgba(150, 150, 150, 1.0);
 }
 #dashBoardExpense:focus, #dashBoardIncome:focus, #dashBoardBudget:focus{
 	background-color: rgba(240, 240, 240, 1.0);
-}
+}*/
 #dashBoardBudget{
 	display: inline-flex;
+}
+#marquee{
+	display: flex;
+	font-size: medium;
+	justify-content: center;
+	overflow: auto;
+	animation: marquee 2.5s ease-in-out;
+}
+.marqueeDiv{
+	width: 33%;
+	background-color: rgba(255, 255, 255, 1.0);
+	/*box-shadow: 0 0 5px 1px rgba(150, 150, 150, 1.0);*/
+	border-radius: 10px;border: none;
+	font-size: medium;
+	padding: 10px 5px;margin: 5px;
+}
+/*.inlineSeparator{
+	border: 1px solid rgba(100, 150, 210, 0.5);
+	width: 0.5px; background-color: rgba(100, 150, 210, 0.5);
+	margin: 0 10px;
+}*/
+.inlineBlockDiv{
+	display: inline-block;
 }
 .inputStyle{
 	border: none;
@@ -219,6 +261,12 @@ textarea{font-family: Verdana;}
 	font-size: medium;
 }
 .editButton{margin: 5px;}
+.editTextArea{
+	border-radius: 10px;
+	background-color: rgba(200, 200, 200, 0.7);
+	border: none;
+	padding: 10px;
+}
 .expensesEditButton:hover, .editButton:hover{background-color: rgba(140, 140, 140, 1.0);}
 .expensesDeleteButton{background-color: rgba(180, 40, 40, 0.8);}
 .expensesDeleteButton:hover{background-color: rgba(200, 40, 40, 1.0);}
@@ -241,16 +289,21 @@ textarea{font-family: Verdana;}
 #utilityDiv{
 	display: flex;
 	justify-content: center;
-	background-color: rgba(240, 240, 240, 1.0);
-	padding: 5px;border-radius: 10px;
+	animation: fadeWithDelay 2s ease-in-out;
+	/*background-color: rgba(240, 240, 240, 1.0);*/
+	border-radius: 10px;
+	overflow: auto;
 }
 .searchButton{
-	border: none;border-radius: 10px;
+	border: none;border-radius: 20px;
 	padding: 10px 20px;margin: 10px;
 	font-size: medium;
 	cursor: pointer;
-	background-color: rgba(200, 200, 200, 0.5);opacity: 0.7;
+	background-color: rgba(120, 80, 200, 0.5);opacity: 1;
 }
+.expenditureButton{background-color: rgba(230, 120, 120, 0.5);}
+.incomeButton{background-color: rgba(120, 230, 120, 0.5);}
+.budgetButton{background-color: rgba(120, 120, 230, 0.5);}
 #searchDiv, #filterDiv{
 	display: none;
 	padding: 10px;
@@ -294,6 +347,74 @@ textarea{font-family: Verdana;}
 	display: inline-block;color: black;padding: 5px;border-radius: 10px;cursor: pointer;
 }
 .coolButtonFooter:hover{background: linear-gradient(to right, rgba(150,0,180,1), rgba(100,150,250,1));color: white;}
+/*Calculater*/
+#calcIcon{
+	position: fixed;
+	cursor: pointer;
+	margin: 20px;padding: 15px 20px 15px 10px;
+	right: 0; bottom: 0;z-index: 3;
+	width: 25px; height: 25px;
+	border-radius: 50%;
+	background-color: rgba(140,60,190,1);color: white;
+	box-shadow: 0 0 5px 1px rgba(0, 0, 0, 1.0);
+}
+#calcIcon:hover{background-color: rgba(100,20,150,1);}
+#calcDiv{
+	display: none;
+	padding-top: 50px;
+	position: fixed;z-index: 4;
+	background-color: rgba(0, 0, 0, 0.4);
+	left: 0;top: 0;right: 0;bottom: 0;
+}
+#calcOuterDiv{
+	display: none;
+	position: fixed;z-index: 5;
+	width: 100%;
+}
+#calcInnerDiv{
+	background-color: rgba(180, 180, 180, 1.0);
+	width: 50%;margin: auto;
+	border-radius: 10px;
+	padding: 10px;
+	margin-left: -0%;
+}
+.calcVButtons{
+	background: none;
+	border: none;
+	font-size: xx-large;
+	cursor: pointer;
+}
+.calcVHelper{color: lightseagreen;}
+#calcHelperButtons{display: none;}
+#dataCaption{
+	font-size: x-small;
+	opacity: 0.5;padding: 0;margin: 0;
+	text-align: right;
+}
+#analysisDiv{
+	overflow: auto;
+	max-height: 70vh;
+}
+td, th{background-color: gainsboro;white-space: nowrap;padding: 10px;border: 1px solid white;}
+th{background-color: lightblue;}
+.calcTable{
+	margin-left: auto;margin-right: auto;
+}
+.calcVSubmit{color: green;}
+.calcTable td{
+	padding: 15px;
+}
+.calcCancel{
+	color: orangered;
+}
+.analysisTable{
+	border-collapse: collapse;
+}
+.analysisSubDiv{
+	width: 50%;
+	border: 1px solid;
+	padding: 10px;
+}
 
 @keyframes fade{
 	0%{opacity: 0;}
@@ -306,6 +427,11 @@ textarea{font-family: Verdana;}
 @keyframes fadeZoom1{
 	0%{opacity: 0;max-height: 0px;}
 	100%{opacity: 1;}
+}
+@keyframes Zoom{
+	0%{max-height: 0px;opacity: 0;}
+	50%{opacity: 0;max-height: 0;}
+	60%{opacity: 1;}
 }
 @keyframes fadeWithDelay{
 	0%{opacity: 0;}
@@ -322,15 +448,36 @@ textarea{font-family: Verdana;}
   50%{transform: rotate(180deg);background-color: orangered;border-radius: 50%;opacity: 0.5;}
   100%{transform: rotate(360deg);background-color: limegreen;}
 }
+@keyframes marquee{
+	0%{transform: translate3d(7000px, 0px, 0px) scale(0.3);background-color: black;}
+	70%{transform: translate3d(0px, 0px, 0px) scale(0.3);}
+	100%{transform: translate3d(0px, 0px, 0px);}
+}
+@keyframes downLater{
+	0%{max-height: 0px;visibility: hidden;opacity: 0;margin: -10px 10px 0 10px; padding: 0;}
+	60%{max-height: 0px;visibility: visible;opacity: 0;margin: -10px 10px 0 10px; padding: 0;}
+	63%{max-height: 500px;padding: 10px; margin: 5px 10px;visibility: visible;opacity: 1;}
+	97%{max-height: 500px;padding: 10px; margin: 5px 10px;visibility: visible;}
+	100%{max-height: 0px;visibility: visible;}
+}
 
 /*Mobile View*/
+@media only screen and (max-width: 1160px){
+	.searchButton{padding: 10px;margin: 2px;}
+	#calcHelperButtons{display: block;}
+	#calcSubmitBigScreen{display: none;}
+}
 @media only screen and (max-width: 960px){
 	#content{width: 100%;}
-	.searchButton{padding: 5px;margin: 2px;}
 	#footerDiv{width: 100%;}
 	#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
 		width: 70%;
 		left: 10%;
 	}
+	#calcInnerDiv{width: 80%;margin:auto;}
 	.editButton{padding: 5px;font-size: small;}
+	.searchButton{padding: 5px;margin: 2px;}
+	/*#analysisDiv{padding: 10px;}*/
+	#utilityDiv .searchButton{font-size: small;}
+	.summaryTime{font-size: small;}
 }

@@ -15,7 +15,7 @@ session_start();
 
 		<div id="header">
 			<div><a id="aboutButton" href="home.php">Home</a></div>
-			<div id="headerName" onclick = "window.location.href = 'home.php'" >Expense Manager</div>
+			<div id="headerName" onclick = "window.location.href = 'home.php'" ><span class="headerIconShow">$</span> Expense Manager <span class="headerIconShow">&#9998;</span></div>
 			<?php
 			if(isset($_SESSION['id'])){
 				echo '<div><a id="logoutButton" href="logout.php">Logout</a></div>';
