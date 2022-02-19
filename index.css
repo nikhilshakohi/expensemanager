@@ -2,15 +2,20 @@ html{
 	transition: background-color 1s ease-in-out, height 1s ease-in-out, width 1s ease-in-out;
 	scroll-behavior: smooth;
 	overflow-y: overlay;/*for scrollbar absolute positioning*/
+	font-family: Verdana;
 }
 body{
 	margin: 0;
-	font-family: Verdana;
 	justify-content: center;align-content: center;align-items: center;text-align: center;
 	background-color: gainsboro;
 }
 a{text-decoration: none;}
-textarea{font-family: Verdana;}
+input,select,textarea{font-family: inherit;}
+label{cursor: pointer;}
+.flexDisplay{display: flex;justify-content: center;align-items: center;align-content: center;flex-wrap: wrap;}
+.noDisplay{display: none;}
+label{user-select: none;}
+.sideHeading{opacity: 0.6;}
 ::-webkit-scrollbar{
 	width: 10px;border-radius: 10px;
 }
@@ -26,10 +31,42 @@ textarea{font-family: Verdana;}
 .loaderButton{
 	height:20px;width: 20px;background-color: green;animation: rotate 1s infinite linear;margin: auto;padding: auto; 
 }
+.basicButton,.basicButtonOuter,.redButton,.redButtonOuter,.greenButton,.greenButtonOuter, .submitButton, .closeButton,#loginButton{
+	border: none;
+	font-size: medium;
+	color: white;
+	padding: 5px;border-radius: 10px;margin: 5px;
+	width: 100px;
+	cursor: pointer;
+	background-position: center;
+	transition: background 0.3s;
+}
+.basicButton:hover,.basicButtonOuter:hover,.redButton:hover,.redButtonOuter:hover,.greenButton:hover,.greenButtonOuter:hover,.submitButton:hover, .closeButton:hover,#loginButton:hover{
+	background: gray radial-gradient(circle, transparent 1%, gray 1%) center/20000%;
+}
+.basicButton:active,.basicButtonOuter:active,.redButton:active,.redButtonOuter:active,.greenButton:active,.greenButtonOuter:active,.submitButton:active, .closeButton:active,#loginButton:active{
+	background-color: grey;
+	background-size: 1%;
+	transition: background 0s;
+}
+.basicButton{background-color: mediumpurple;border: 1px solid mediumpurple;}
+.basicButtonOuter{border: 1px solid mediumpurple;color: black;}
+.redButton{background-color: indianred;border: 1px solid indianred;}
+.redButtonOuter{background-color: none;border: 1px solid indianred;color: black;}
+.greenButton{background-color: forestgreen;border: 1px solid forestgreen;}
+.greenButtonOuter{background-color: none;border: 1px solid forestgreen;color: black;}
+.basicButton:hover{background-color: rebeccapurple;}
+.basicButtonOuter:hover{background-color: rebeccapurple;color: white;}
+.redButton:hover{background-color: darkred;}
+.redButtonOuter:hover{background-color: darkred;color: white;}
+.greenButton:hover{background-color: darkgreen;}
+.greenButtonOuter:hover{background-color: darkgreen;color: white;}
+.smallButton{padding: 5px;width: auto;}
 /*Login Page*/
 #loginForm, #signupForm{animation: fade 1s ease-in-out;}
 #signupForm{display: none;}/*Hidden by default*/
-.errorMessage{color: red;animation: fade 0.7s ease-in-out;}
+.errorMessage{color: red;animation: fade 0.5s ease-in-out;position: relative;}
+.errorMessageShake{color: red;animation: shake 0.5s ease-in-out;position: relative;}
 .successMessage{color: green;animation: fade 0.7s ease-in-out;}
 .bufferMessage{color: blue;animation: fade 0.7s ease-in-out;}
 .headingName{font-size: x-large;margin: 0px 0px 15px 0px;}
@@ -61,14 +98,15 @@ textarea{font-family: Verdana;}
 	padding: 10px;margin: 5px;
 	border-radius: 5px;
 }
+.showPasswordCheckLabel{z-index: 1;position: absolute;transform: scale(1.5);margin-left: -15px;margin-top: 10px;text-decoration: line-through;}
 /*Home Page*/
-#editExpensesOuterDiv, #deleteExpensesOuterDiv, #profileOuterDiv, #editProfileOuterDiv{
+#editExpensesOuterDiv, #deleteExpensesOuterDiv, #profileOuterDiv, #editProfileOuterDiv, .editOuterDiv{
 	position: fixed;top: 0;left: 0;right: 0;
 	width: 100%;height: 100%;
 	background-color: rgba(0, 0, 0, 0.7);
-	z-index: 2;
+	z-index: 3;
 }
-#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
+#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv, .editInnerDiv{
 	position: fixed;
 	top: 10%;left: 25%;
 	width: 50%;max-height: 80%;
@@ -76,6 +114,10 @@ textarea{font-family: Verdana;}
 	background-color: rgba(240, 240, 240, 1.0);
 	overflow: auto;
 }
+#expenseFormOtherDataShow, #incomeFormOtherDataShow{
+	display: none;animation: fade 1s ease-in-out;
+}
+.hideButton{font-size: large;}
 #header{
 	position: fixed;left: 0;right: 0;top: 0;
 	display: flex;justify-content: center;
@@ -95,6 +137,7 @@ textarea{font-family: Verdana;}
 #logoutButton, .closeButton, #aboutButton, #aboutLoginButton{
 	text-decoration: none;border: none;
 	color: white;background-color: rgba(255, 69, 0, 0.8);
+	font-size: medium;
 	padding: 10px;border-radius: 10px;
 	cursor: pointer;
 }
@@ -102,6 +145,7 @@ textarea{font-family: Verdana;}
 	position: absolute;right: 20px;top: 10px;
 	color: white;background-color: rgba(255, 69, 0, 0.0);
 }
+#logoutButtonSmall{display: none;width: auto;margin: auto;font-size: small;}
 #aboutLoginButton{
 	position: absolute;right: 20px;top: 10px;
 }
@@ -122,7 +166,7 @@ textarea{font-family: Verdana;}
 	width: 50%;
 	margin: auto;margin-top: 60px;
 }
-#contentDashboard, #contentExpenseForm, #contentIncomeForm, #contentGreetings, #contentLogin, #contentAbout, #contentShortSummaryForm, #dateShow, #contentAnalysisForm, #allDetailsDiv{
+#contentDashboard, #contentExpenseForm, #contentIncomeForm, #contentGreetings, #contentLogin, #contentAbout, #contentShortSummaryForm, #dateShow, #contentAnalysisForm, #contentGraphForm, #allDetailsDiv{
 	background-color: rgba(245, 245, 245, 1.0);
 	border-radius: 10px;
 	padding: 20px 10px 10px 10px;
@@ -140,18 +184,20 @@ textarea{font-family: Verdana;}
 	cursor: pointer;
 }
 #dateShow{
+	position: absolute;width: 60vw;left: calc(20vw - 10px);top: 55px;
 	animation: downLater 6s ease-in-out;
 	padding: 0px; margin: -10px 10px 0px 10px; visibility: hidden;
-	background-color: rgba(70, 50, 170, 1.0);color: white;
+	background-color: rgba(70, 150, 70, 1.0);color: white;
 	max-height: 0px;
 }
 #contentGreetings:hover{background-color: rgba(50, 30, 150, 1.0);}
-#contentDashboard{animation: Zoom 2s ease-in-out;padding: 0;margin-top: 5px;max-height: 500px;}
-#contentExpenseForm{animation: fadeWithDelay 3.0s ease-in-out;}
-#contentIncomeForm{animation: fadeWithDelay 3.5s ease-in-out;}
-#contentShortSummaryForm{animation: fadeWithDelay 4.0s ease-in-out; }
-#contentAnalysisForm{animation: fadeWithDelay 4.5s ease-in-out;}
-#contentAbout{animation: fadeWithDelay 1s ease-in-out;}
+#contentDashboard{animation: Zoom 2s ease-in-out;padding: 0;margin-top: 5px;}/*Removed max-height: 500px;*/
+#contentExpenseForm{animation: fadeWithDelay 1.0s ease-in-out;}
+#contentIncomeForm{animation: fadeWithDelay 1.25s ease-in-out;}
+#contentShortSummaryForm{animation: fadeWithDelay 1.5s ease-in-out; }
+#contentAnalysisForm{animation: fadeWithDelay 1.75s ease-in-out;}
+#contentGraphForm{animation: fadeWithDelay 2s ease-in-out;}
+#contentAbout{animation: fadeWithDelay 2.1s ease-in-out;}
 #dashBoard{
 	display: inline-block;
 	justify-content: center;align-content: center;align-items: center;
@@ -204,7 +250,7 @@ textarea{font-family: Verdana;}
 	border-radius: 5px;
 }
 .submitButton{
-	font-size: large;
+	font-size: medium;
 	padding: 10px;
 	border: none;border-radius: 10px;
 	background-color: rgba(90, 50, 150, 0.8);color: white;
@@ -219,6 +265,7 @@ textarea{font-family: Verdana;}
 	display: flex;justify-content: space-between;
 	cursor: pointer;
 }
+.subDetailsButton{cursor: pointer;}
 .expensesListMainHeading{
 	background-color: rgba(70, 50, 170, 1.0);color: white;
 }
@@ -287,23 +334,25 @@ textarea{font-family: Verdana;}
 	margin: 5px 0;
 }
 #utilityDiv{
-	display: flex;
+	display: flex;flex-wrap: wrap;
 	justify-content: center;
-	animation: fadeWithDelay 2s ease-in-out;
-	/*background-color: rgba(240, 240, 240, 1.0);*/
+	/*animation: fadeWithDelay 2s ease-in-out;
+	background-color: rgba(240, 240, 240, 1.0);*/
 	border-radius: 10px;
 	overflow: auto;
 }
 .searchButton{
 	border: none;border-radius: 20px;
-	padding: 10px 20px;margin: 10px;
+	padding: 10px;margin: 10px;
 	font-size: medium;
 	cursor: pointer;
-	background-color: rgba(120, 80, 200, 0.5);opacity: 1;
+	background-color: rgba(230, 230, 230, 1);opacity: 1;
+	animation: Zoom3 2s ease-in-out;
 }
-.expenditureButton{background-color: rgba(230, 120, 120, 0.5);}
-.incomeButton{background-color: rgba(120, 230, 120, 0.5);}
-.budgetButton{background-color: rgba(120, 120, 230, 0.5);}
+.filterButton,.searchButton{border: solid rgba(120, 200, 200, 1);border-width: 5px 20px 5px 20px;}
+.expenditureButton{border: solid rgba(230, 120, 120, 1);border-width: 5px 20px 5px 20px;}
+.incomeButton{border: solid rgba(120, 230, 120, 1);border-width: 5px 20px 5px 20px;}
+.budgetButton{border: solid rgba(120, 120, 230, 1);border-width: 5px 20px 5px 20px;}
 #searchDiv, #filterDiv{
 	display: none;
 	padding: 10px;
@@ -325,9 +374,10 @@ textarea{font-family: Verdana;}
 	max-height: 1000px;
 	overflow: auto;
 }
-.searchButton:hover{
-	background-color: rgba(150, 150, 150, 1.0);color: white;opacity: 1;
-}
+.searchButton:hover{background-color: rgba(120, 200, 200, 1.0);color: white;opacity: 1;}
+.expenditureButton:hover{background-color: rgba(230, 120, 120, 1.0);color: white;opacity: 1;}
+.incomeButton:hover{background-color: rgba(120, 230, 120, 1.0);color: white;opacity: 1;}
+.budgetButton:hover{background-color: rgba(120, 120, 230, 1.0);color: white;opacity: 1;}
 .searchBar, .filterInputDate{
 	padding: 10px;margin: 5px;
 	background-color: rgba(220, 220, 220, 1.0);
@@ -395,6 +445,11 @@ textarea{font-family: Verdana;}
 	overflow: auto;
 	max-height: 70vh;
 }
+.tableContainer{
+	overflow: auto;
+	padding: 5px;
+	text-align: center;
+}
 td, th{background-color: gainsboro;white-space: nowrap;padding: 10px;border: 1px solid white;}
 th{background-color: lightblue;}
 .calcTable{
@@ -409,16 +464,55 @@ th{background-color: lightblue;}
 }
 .analysisTable{
 	border-collapse: collapse;
+	margin-left: auto;margin-right: auto;
 }
 .analysisSubDiv{
 	width: 50%;
 	border: 1px solid;
 	padding: 10px;
 }
+/*content-graph*/
+#contentGraphForm{padding: 20px 30px;}
+.graphDiv{width: calc(95% - 50px);overflow: auto;padding: 5px 50px;}
+.graphArea{
+	height: 200px;width: 200%;border-width: 0 0 1px 0;border-style: solid;margin: auto;padding: 20px 0 0 0; margin-bottom: 20px;animation: Zoom2 1s ease-in-out;
+}
+.graphGrid{
+	display: flex;justify-content: space-between;cursor: pointer;
+}
+.graphGridLines{
+	border-right: 1px solid rgba(200, 200, 200, 0.3);height: 200px;writing-mode: vertical-rl;text-orientation: upright;width: calc( 400px / 31 );animation: marquee2 2s ease-in-out;
+}
+.graphXAxis{
+	display: flex;justify-content: space-between;margin: 5px;
+}
+.graphGridLines:hover .graphXAxisLabel{transform: scale(2);}
+.graphXAxisLabel{font-size: small;width: calc( 400px / 31 );}
+.graphYAxisLabel{font-size: small;color: red;width: calc( 400px / 31 );margin-left: -50px;opacity: 1;margin-top: -2px;z-index: 2;}
+.graphValueText{background-color: rgba(50, 50, 50, 1.0);color: white;display: none;border-radius: 10px;}
+.graphDescription{justify-content: space-around;}
+.graphMonthName{border-bottom:1px solid;padding:7px;display:flex;}
+#addWalletData,#allWalletList,#addMoneyToWallet{display: none;animation: Zoom2 0.4s ease-in-out;}
+#currentWallets{overflow: auto;display: flex;justify-content: center;flex-wrap: wrap;}
+.eachCurrentWallet{border-right: 1px solid gainsboro;padding: 20px 10px;margin: 5px;display: block;background-color: rgba(50, 250, 50, 0.2);border-radius: 20px;}
+#walletActionDiv{animation: fadeWithDelay 4s ease-in-out;display: flex;justify-content: flex-end;}
+#walletHistory{display: none;}
+#walletButtons{display:none}
 
 @keyframes fade{
 	0%{opacity: 0;}
 	100%{opacity: 1;}
+}
+@keyframes shake{
+	0%{left: 3px;}
+	12.5%{left: -3px;}
+	25%{left: 3px;}
+	37.5%{left: -3px;}
+	50%{left: 2px;}
+	62.5%{left: -2px;}
+	75%{left: 1px;}
+	87.5%{left: -1px;}
+	100%{left: 0px;}
 }
 @keyframes fadeZoom{
 	0%{opacity: 0;max-height: 70px;}
@@ -432,6 +526,20 @@ th{background-color: lightblue;}
 	0%{max-height: 0px;opacity: 0;}
 	50%{opacity: 0;max-height: 0;}
 	60%{opacity: 1;}
+}
+@keyframes Zoom2{
+	0%{opacity: 0;}
+	50%{opacity: 0;transform: scale(0.3) translateX(10px);}
+	60%{opacity: 1;}
+}
+@keyframes Zoom3{
+	0%{transform: scale(0);opacity: 0;}
+	12.5%{opacity: 0;}
+	50%{transform: scale(0.1) translateX(10px);}
+	60%{opacity: 1;transform: scale(0.9);}
+	70%{transform: scale(0.6);}
+	80%{transform: scale(0.95);}
+	90%{transform: scale(0.75);}
 }
 @keyframes fadeWithDelay{
 	0%{opacity: 0;}
@@ -453,10 +561,15 @@ th{background-color: lightblue;}
 	70%{transform: translate3d(0px, 0px, 0px) scale(0.3);}
 	100%{transform: translate3d(0px, 0px, 0px);}
 }
+@keyframes marquee2{
+	0%{transform: translate3d(50px, 0px, 0px) scale(0.0);background-color: black;}
+	50%{transform: translate3d(0px, 0px, 0px) scale(0.0);}
+	100%{transform: translate3d(0px, 0px, 0px);}
+}
 @keyframes downLater{
 	0%{max-height: 0px;visibility: hidden;opacity: 0;margin: -10px 10px 0 10px; padding: 0;}
-	60%{max-height: 0px;visibility: visible;opacity: 0;margin: -10px 10px 0 10px; padding: 0;}
-	63%{max-height: 500px;padding: 10px; margin: 5px 10px;visibility: visible;opacity: 1;}
+	40%{max-height: 0px;visibility: visible;opacity: 0;margin: -10px 10px 0 10px; padding: 0;}
+	43%{max-height: 500px;padding: 10px; margin: 5px 10px;visibility: visible;opacity: 1;}
 	97%{max-height: 500px;padding: 10px; margin: 5px 10px;visibility: visible;}
 	100%{max-height: 0px;visibility: visible;}
 }
@@ -471,13 +584,19 @@ th{background-color: lightblue;}
 	#content{width: 100%;}
 	#footerDiv{width: 100%;}
 	#editExpensesInnerDiv, #deleteExpensesInnerDiv, #profileInnerDiv, #editProfileInnerDiv{
-		width: 70%;
-		left: 10%;
+		width: 85%;
+		left: 5%;
 	}
+	#dateShow{width: 97vw;left: -10px}
 	#calcInnerDiv{width: 80%;margin:auto;}
 	.editButton{padding: 5px;font-size: small;}
 	.searchButton{padding: 5px;margin: 2px;}
 	/*#analysisDiv{padding: 10px;}*/
 	#utilityDiv .searchButton{font-size: small;}
 	.summaryTime{font-size: small;}
+	.graphArea{width: 500%;}
+	#aboutButtonDiv{display: none;}
+	#header{justify-content: space-between;}
+	#logoutButton{display: none;}
+	#logoutButtonSmall{display: block;}
 }

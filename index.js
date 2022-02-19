@@ -1,3 +1,41 @@
+/*Service Worker*/
+/*if ("serviceWorker" in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register("service-worker.js").then(registration => {
+			console.log(registration);
+			console.log("Service Worker Registered! Scope is :",registration.scope);
+		}).catch(error => {
+			console.log("Service Worker Registration Failed!");
+			console.log(error);
+		});
+	});
+}*/
+
+/*Install Prompt*/
+/*var btnAdd=document.getElementById("installButton");
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+	e.preventDefault();
+	deferredPrompt=e;
+	btnAdd.style.display="block";
+});*/
+
+/*if(btnAdd){
+	btnAdd.addEventListener('click', (e) => {
+		deferredPrompt.prompt();
+		deferredPrompt.userChoice.then((choiceResult) => {
+			if(choiceResult.outcome === 'accepted'){
+				console.log('User accepted the A2HS prompt');
+			}
+			deferredPrompt = null;
+		});
+	});
+}*/
+
+/*window.addEventListener('appinstalled', (evt) =>{
+	app.logEvent('a2hs','installed');
+});*/
+
 /*Toggle Signup, Login forms*/
 function toggleSignIn(formType){
 	document.getElementById("loginForm").style.display = "none";
@@ -12,8 +50,10 @@ function toggleSignIn(formType){
 function showPassword(type){
 	if(document.getElementById(type+"Password").type == "text"){
 		document.getElementById(type+"Password").type = "password";
+		document.getElementById(type+"PasswordBoxLabel").style.textDecoration = "line-through";
 	}else{
 		document.getElementById(type+"Password").type = "text";
+		document.getElementById(type+"PasswordBoxLabel").style.textDecoration = "none";
 	}
 }
 
@@ -36,23 +76,23 @@ function signup(){
 
 	/*Validations*/
 	if(username == '' || password == '' || confirmPassword == '' || fullName == '' || email == ''){ /*Empty Fields*/
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Please Fill in all the fields</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Please Fill in all the fields</span>";
 	}else if(!/^[a-zA-Z0-9 ]+$/.test(username)){ /*Validate expressions*/
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Username</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Invalid charecters in Username</span>";
 		document.getElementById("signupUsername").style.border = "3px solid red";
 		document.getElementById("signupUsername").focus();
 	}else if(!/^[a-zA-Z0-9!@#$%^&*]{4,15}$/.test(password)){ /*Validate expressions*/
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Password / Minimum 4 charecters are required</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Invalid charecters in Password / Minimum 4 charecters are required</span>";
 		document.getElementById("signupPassword").style.border = "1px solid red";
 	}else if(!/^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)){ /*Validate expressions*/
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Email not valid</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Email not valid</span>";
 		document.getElementById("signupEmail").style.border = "3px solid red";
 		document.getElementById("signupEmail").focus();
 	}else if(!/^[a-zA-Z ]+$/.test(fullName)){ /*Validate expressions*/
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Invalid charecters in Name</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Invalid charecters in Name</span>";
 		document.getElementById("signupFullName").style.border = "1px solid red";
 	}else if(password != confirmPassword){ /*If password, confirm password do not match */
-		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessage'>Password and confirm Password do not match!</span>";
+		document.getElementById("signupErrorMessage").innerHTML = "<span class='errorMessageShake'>Password and confirm Password do not match!</span>";
 		document.getElementById("signupPassword").style.border = "1px solid red";
 		document.getElementById("signupConfirmPassword").style.border = "1px solid red";
 	}else{ /*If all above conditions are valid, User is signed up!*/
@@ -80,18 +120,20 @@ function signup(){
 
 /*Login*/
 function login(){
+	document.getElementById("loginPassword").focus();
 	var username = document.getElementById("loginUsername").value;
 	var password = document.getElementById("loginPassword").value;
 	document.getElementById("loginButton").innerHTML = "<div class='loaderButton'></div>";
 	document.getElementById("loginErrorMessage").innerHTML = "";/*To remove any previous error Messages*/
+	if(document.getElementById("rememberMeLoginBox").checked!=false){var autoLogin = 'enabled';}else{var autoLogin = 'disabled';}
 	/*Validation*/
 	if(username == '' || password == ''){ /*Empty Fields*/
-		document.getElementById("loginErrorMessage").innerHTML = "<span class='errorMessage'>Please Fill in all the fields</span>";
+		document.getElementById("loginErrorMessage").innerHTML = "<span class='errorMessageShake'>Please Fill in all the fields</span>";
 	}else{
 		/*AJAX Functionality*/
 		/*Declare variables*/
 		var login = "RandomInput";
-		var data = "login="+login+"&username="+username+"&password="+password;
+		var data = "login="+login+"&username="+username+"&password="+password+"&autoLogin="+autoLogin;
 		/*Declare XML*/
 		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
 		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
@@ -115,22 +157,42 @@ function login(){
 	document.getElementById("loginButton").innerHTML = "LOGIN";
 }
 
+/*Show Expense Form*/
+function showOtherDiv(type){
+	document.getElementById(type+"FormOtherDataShow").style.display="block";
+	document.getElementById(type+"Header").style.display="block";
+}
+
+/*Hide Expense Form*/
+function closeOtherDiv(type){
+	document.getElementById(type+"FormOtherDataShow").style.display="none";
+	document.getElementById(type+"Header").style.display="inline";	
+}
+
 /*Add Expense*/
 function addExpense(type){
+	document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
 	var expenseAmount = document.getElementById(type+"Amount").value;
 	var expenseDate = document.getElementById(type+"Date").value;
 	var expenseCategory = document.getElementById(type+"Category").value;
 	var expenseDetails = document.getElementById(type+"Details").value;
 	var expenseUsername = document.getElementById(type+"Username").value;
-	document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
+	var expenseWallets = document.getElementsByName(type+"Wallet");
+	var expenseWallet = 'noWalletRegd';
+	for(var w=0; w<expenseWallets.length; w++){
+		if(expenseWallets[w].checked!==false){
+			expenseWallet = expenseWallets[w].value;
+		}
+	}
+
 	/*Validation*/
 	if((expenseAmount == '') || (expenseDate == '') || (expenseCategory == '')){
-		document.getElementById(type+"ErrorMessage").innerHTML = "<span class='errorMessage'>Fill in the required fields</span>";
+		document.getElementById(type+"ErrorMessage").innerHTML = "<span class='errorMessageShake'>Fill in the required fields</span>";
 	}else{
 		/*AJAX Functionality*/
 		/*Declare variables*/
 		var addExpense = "RandomInput";
-		var data = "addExpense="+addExpense+"&expenseAmount="+expenseAmount+"&expenseDate="+expenseDate+"&expenseCategory="+expenseCategory+"&expenseDetails="+expenseDetails+"&expenseUsername="+expenseUsername+"&type="+type;
+		var data = "addExpense="+addExpense+"&expenseAmount="+expenseAmount+"&expenseDate="+expenseDate+"&expenseCategory="+expenseCategory+"&expenseDetails="+expenseDetails+"&expenseUsername="+expenseUsername+"&expenseWallet="+expenseWallet+"&type="+type;
 		/*Declare XML*/
 		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
 		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
@@ -143,25 +205,38 @@ function addExpense(type){
 				if(xhr.status == 200){
 					eachResponse = this.responseText.split("-period-");/*Get two Messages from server*/
 					/*document.getElementById(type+"ErrorMessage").innerHTML = "<div class='loaderButton'></div>";*/
-					document.getElementById(type+"ErrorMessage").innerHTML = eachResponse[0];
-					document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
-					setTimeout(function(){document.getElementById(type+"Submit").innerHTML = "Submit";},500);
-					setTimeout(function(){document.getElementById(type+"ErrorMessage").innerHTML = "";},2000);
-					document.getElementById("newExpense").innerHTML = eachResponse[1];
-					document.getElementById("newIncome").innerHTML = eachResponse[2];
-					document.getElementById("newBudget").innerHTML = eachResponse[3];
-					/*Marquee Inputs*/
-					if(document.getElementById("marqueeTodayExpense")){document.getElementById("marqueeTodayExpense").innerHTML = "-&#8377;"+eachResponse[4];}
-					if(document.getElementById("marqueeTodayIncome")){document.getElementById("marqueeTodayIncome").innerHTML = "+&#8377;"+eachResponse[5];}
-					if(document.getElementById("marqueeYesterdayExpense")){document.getElementById("marqueeYesterdayExpense").innerHTML = "-&#8377;"+eachResponse[6];}
-					if(document.getElementById("marqueeYesterdayIncome")){document.getElementById("marqueeYesterdayIncome").innerHTML = "+&#8377;"+eachResponse[7];}
-					if(document.getElementById("marqueeThisMonthExpense")){document.getElementById("marqueeThisMonthExpense").innerHTML = "-&#8377;"+eachResponse[8];}
-					if(document.getElementById("marqueeThisMonthIncome")){document.getElementById("marqueeThisMonthIncome").innerHTML = "+&#8377;"+eachResponse[9];}
-					
-					/*Clear Form*/
-					var clearInputs = document.getElementsByClassName(type+"Input");
-					for(var i = 0; i < clearInputs.length; i++){
-						clearInputs[i].value = "";
+					if(eachResponse[0]=='noEnoughMoneyInWallet'){
+						document.getElementById(type+"ErrorMessage").innerHTML = '<div class="errorMessageShake">No enough money in '+expenseWallet+'! <br>Select another wallet or update amount in wallet</div>';
+					}else{
+						document.getElementById(type+"ErrorMessage").innerHTML = eachResponse[1];
+						document.getElementById(type+"Submit").innerHTML = "<div class = 'loaderButton'></div>";
+						setTimeout(function(){document.getElementById(type+"Submit").innerHTML = "Submit";},500);
+						setTimeout(function(){document.getElementById(type+"ErrorMessage").innerHTML = "";},2000);
+						document.getElementById("newExpense").innerHTML = eachResponse[2];
+						document.getElementById("newIncome").innerHTML = eachResponse[3];
+						document.getElementById("newBudget").innerHTML = eachResponse[4];
+						/*Marquee Inputs*/
+						if(document.getElementById("marqueeTodayExpense")){document.getElementById("marqueeTodayExpense").innerHTML = "-&#8377;"+eachResponse[5];}
+						if(document.getElementById("marqueeTodayIncome")){document.getElementById("marqueeTodayIncome").innerHTML = "+&#8377;"+eachResponse[6];}
+						if(document.getElementById("marqueeYesterdayExpense")){document.getElementById("marqueeYesterdayExpense").innerHTML = "-&#8377;"+eachResponse[7];}
+						if(document.getElementById("marqueeYesterdayIncome")){document.getElementById("marqueeYesterdayIncome").innerHTML = "+&#8377;"+eachResponse[8];}
+						if(document.getElementById("marqueeThisMonthExpense")){document.getElementById("marqueeThisMonthExpense").innerHTML = "-&#8377;"+eachResponse[9];}
+						if(document.getElementById("marqueeThisMonthIncome")){document.getElementById("marqueeThisMonthIncome").innerHTML = "+&#8377;"+eachResponse[10];}
+						if(expenseWallet!='noWalletRegd'){
+							document.getElementById("allWalletList").innerHTML=eachResponse[11];
+							document.getElementById("walletHistory").innerHTML=eachResponse[12];
+							/*Retain current value*/
+							for(var wa=0; wa<expenseWallets.length; wa++){
+								expenseWallets[wa].checked=false;
+							}
+						}
+						
+						/*Clear Form*/
+						var clearInputs = document.getElementsByClassName(type+"Input");
+						for(var i = 0; i < clearInputs.length; i++){
+							clearInputs[i].value = "";
+						}
+						document.getElementById(type+"Date").value = expenseDate;/*Retain Previously updated date*/
 					}
 				}
 			}
@@ -313,7 +388,6 @@ function editExpenses(id){
 	}
 }
 
-
 /*Edit Expenses*/
 function confirmEdit(id){
 	var expensesId = id;
@@ -323,11 +397,11 @@ function confirmEdit(id){
 	var expensesDetails = document.getElementById("editExpenseDetails"+expensesId).value;
 	/*Validation*/
 	if((expensesAmount == '') || (expensesDate == '') || (expensesCategory == '')){
-		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessage'>Fill in the required fields.</span>";
+		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessageShake'>Fill in the required fields.</span>";
 	}else if(isNaN(expensesAmount)){
-		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessage'>Enter only numbers in amount.</span>";
-	}else if(expensesDate.match(/^\d{4}-\d{2}-\d{2}$/) === null){
-		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessage'>Please Enter Date in yyyy-mm-dd format only.</span>";
+		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessageShake'>Enter only numbers in amount.</span>";
+	}else if(expensesDate.match(/^\d{2}-\d{2}-\d{4}$/) === null){
+		document.getElementById("editExpenseErrorMessage").innerHTML = "<span class = 'errorMessageShake'>Please Enter Date in dd-mm-yyyy format only.</span>";
 	}else{
 		/*AJAX Functionality*/
 		/*Declare variables*/
@@ -360,7 +434,6 @@ function confirmEdit(id){
 		}
 	}
 }
-
 
 /*Show delete Expenses*/
 function deleteExpenses(id){
@@ -404,9 +477,13 @@ function confirmDelete(id){
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4){
 			if(xhr.status == 200){
-				document.getElementById("deleteExpensesDiv").innerHTML = "";
+				document.getElementById("deleteExpenseErrorMessage").innerHTML = "<span class = 'successMessage'>Data Deleted Successfully!</span>";
+				setTimeout(function(){document.getElementById("deleteExpenseErrorMessage").innerHTML = "<div class = 'loaderButton'></div>";},500)
+				setTimeout(function(){document.getElementById("deleteExpensesDiv").innerHTML = "";},1000);
+				
 				document.getElementById("expenseDetailsDiv").innerHTML = "";
 				document.getElementById("incomeDetailsDiv").innerHTML = "";
+				document.getElementById("budgetDetailsDiv").innerHTML = "";
 				eachResponse = this.responseText.split("-period-");
 				if(eachResponse[0] == 'expense'){
 					document.getElementById("newExpense").innerHTML = eachResponse[1];
@@ -419,10 +496,14 @@ function confirmDelete(id){
 	}
 }
 
-
 /*Hide Edit Div*/
 function hideEditExpense(){
 	document.getElementById("editExpensesDiv").innerHTML = "";
+}
+
+/*Hide Sub Details Div*/
+function hideSubDetailsDiv(){
+	document.getElementById("getSubDetailsDiv").innerHTML = "";	
 }
 
 /*Hide Delete Div*/
@@ -452,6 +533,16 @@ function hideProfileDetails(){
 /*Hide Edit Profile Details*/
 function hideEditProfileDetails(){
 	document.getElementById("editProfileInfo").innerHTML = "";
+}
+
+/*Hide Edit Wallet Div*/
+function hideEditWallet(){
+	document.getElementById("editWalletDiv").innerHTML = "";
+}
+
+/*Hide Delete Wallet Div*/
+function hideDeleteWallet(){
+	document.getElementById("deleteWalletDiv").innerHTML = "";
 }
 
 /*Toggle List Divs*/
@@ -666,10 +757,10 @@ function confirmEditProfileDetails(type, id){
 	var error = "";
 	/*Validation*/
 	if(newValue == ''){
-		var error = "<span class = 'errorMessage'>Please Fill the required details.</span>";
+		var error = "<span class = 'errorMessageShake'>Please Fill the required details.</span>";
 	}else if(type == 'email'){
 		if(!/^[a-zA-Z0-9.-_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(newValue)){ /*Validate expressions*/
-			var error = "<span class = 'errorMessage'>Enter a valid Email ID.</span>";
+			var error = "<span class = 'errorMessageShake'>Enter a valid Email ID.</span>";
 		}
 	}
 	document.getElementById("confirmEditProfileDetailsButton").innerHTML = "Done";
@@ -701,9 +792,37 @@ function confirmEditProfileDetails(type, id){
 							document.getElementById("contentGreetings").innerHTML = "Hello "+newValue+"!";
 						}
 					}else{
-						document.getElementById("editProfileStatus").innerHTML = "<span class = 'errorMessage'>Username / Email Already Exists, Try Again.</span>";
+						document.getElementById("editProfileStatus").innerHTML = "<span class = 'errorMessageShake'>Username / Email Already Exists, Try Again.</span>";
 					}
 				}
+			}
+		}
+	}	
+}
+
+/*Show Individual Expense Details*/
+function showExpenseSubDetails(month, year, category, type){
+	var month = month;
+	var year = year;
+	var category = category;
+	var type = type;
+	var username = document.getElementById("username").value;
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var checkSubDetails = "RandomInput";
+	var data = "checkSubDetails="+checkSubDetails+"&month="+month+"&year="+year+"&category="+category+"&username="+username+"&type="+type;
+	document.getElementById("getSubDetailsDiv").style.display="block";
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("getSubDetailsDiv").innerHTML = this.responseText;
 			}
 		}
 	}	
@@ -734,9 +853,9 @@ function calculate(){
 	/*Validation*/
 	document.getElementById("calcResult").innerHTML = "";
 	if(query == ''){
-		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessage'>No input given.</span>";
+		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessageShake'>No input given.</span>";
 	}else if(!/^[0-9\.\+\-\*\/\%\^\*\(\)]+$/.test(query)){
-		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessage'>Enter a valid input.</span>";
+		document.getElementById("calcResult").innerHTML = "<span class = 'errorMessageShake'>Enter a valid input.</span>";
 	}else{
 		var output = eval(query);
 		document.getElementById("calcResult").innerHTML = "Result: <span class = 'successMessage'>"+query+" = "+output+"</span>";
@@ -758,6 +877,7 @@ function putCalc(val){
 }
 
 /*Notifications*/
+/*Discontinued as not much effective!*/
 function notifyMe() {
 	if (!("Notification" in window)) {
     	alert("This browser does not support desktop notification");
@@ -802,4 +922,358 @@ function notifyMe() {
     	});
   	}
   	setTimeout(notifyMe, 1000);
+}
+
+/*Show Graph Values*/
+function showGraphValues(){
+	var graphValues=document.getElementsByClassName("graphValueText");
+	/*var showGraphButton=document.getElementsByClassName("showGraphValuesButton");*/
+	for(var i=0;i<graphValues.length;i++){
+		if(graphValues[i].style.display=="inline-block"){
+			graphValues[i].style.display="none";
+			/*for(var j=0;j<showGraphButton.length;j++){showGraphButton[j].innerHTML="Show Values";}*/
+		}else{
+			graphValues[i].style.display="inline-block";
+			/*for(var j=0;j<showGraphButton.length;j++){showGraphButton[j].innerHTML="Hide Values";}*/
+		}
+	}
+}
+
+/*Add new Wallet*/
+function addWallet(){
+	var walletName = document.getElementById("walletName").value;
+	var walletAmount = document.getElementById("walletAmount").value;
+	var username = document.getElementById("username").value;
+	document.getElementById("walletSubmit").innerHTML = "<div class='loaderButton'></div>";
+	/*Validations*/
+	if(walletName == '' || walletAmount == ''){ /*Empty Fields*/
+		document.getElementById("walletErrorMessage").innerHTML = "<span class='errorMessageShake'>Please Fill in all the fields</span>";
+		setTimeout(function(){document.getElementById("walletErrorMessage").innerHTML = "";},4000)
+	}else{ 
+		/*AJAX Functionality*/
+		/*Declare variables*/
+		var addWallet = "RandomInput";
+		var data = "addWallet="+addWallet+"&walletName="+walletName+"&walletAmount="+walletAmount+"&username="+username;
+		/*Declare XML*/
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		/*AJAX Methods*/
+		xhr.open("POST","conditions.php",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					eachResponse=this.responseText.split('-period-');
+					if(eachResponse[0]=='success'){
+						document.getElementById("walletErrorMessage").innerHTML = "<span class='successMessage'>Wallet Added Successfully!</span>";
+						setTimeout(function(){document.getElementById("walletErrorMessage").innerHTML = '';},4000);
+						/*Set wallet list in add expense and income*/
+						document.getElementById("expenseWalletList").innerHTML=eachResponse[1];
+						document.getElementById("incomeWalletList").innerHTML=eachResponse[2];
+						document.getElementById("allWalletList").innerHTML=eachResponse[3];
+						document.getElementById("addMoneyToWallet").innerHTML=eachResponse[4];
+						/*Clearing inputs*/
+						document.getElementById("walletName").value="";
+						document.getElementById("walletAmount").value="";
+					}else if(eachResponse[0]=='registeredAlready'){
+						document.getElementById("walletErrorMessage").innerHTML = "<span class='errorMessageShake'>Wallet with this name is already registered with us.. Try with a new name!</span>";
+						setTimeout(function(){document.getElementById("walletErrorMessage").innerHTML = '';},4000);
+					}else{
+						document.getElementById("walletErrorMessage").innerHTML = "<span class='errorMessageShake'>Something went wrong!</span>";
+						setTimeout(function(){document.getElementById("walletErrorMessage").innerHTML = '';},4000);
+					}
+
+				}
+			}
+		}
+	}
+	document.getElementById("walletSubmit").innerHTML = "ADD";
+}
+
+/*Wallet select*/
+function setWalletSelection(type){
+	var username=document.getElementById("username").value;
+	if(type=='credit'){var selectedValue=document.getElementById("walletCredit").value;}
+	else if(type=='debit'){var selectedValue=document.getElementById("walletDebit").value;}
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var setWalletSelection = "RandomInput";
+	var data = "setWalletSelection="+setWalletSelection+"&username="+username+"&selectedValue="+selectedValue;
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				if(type=='debit'){
+					document.getElementById("walletCredit").innerHTML=this.responseText;
+				}/*else if(type=='credit'){
+					document.getElementById("walletDebit").innerHTML=this.responseText;
+				}*/
+			}
+		}
+	}
+}
+
+/*Wallet Exhange Amount*/
+function walletExchange(){
+	var username=document.getElementById("username").value;
+	var walletExchangeAmount=document.getElementById("walletExchangeAmount").value;
+	var walletDebit=document.getElementById("walletDebit").value;
+	var walletCredit=document.getElementById("walletCredit").value;
+	document.getElementById("walletExchangeSubmit").innerHTML = "<div class='loaderButton'></div>";
+	/*Validations*/
+	if(walletDebit == '' || walletCredit == '' || walletExchangeAmount == ''){ /*Empty Fields*/
+		document.getElementById("walletExchangeErrorMessage").innerHTML = "<span class='errorMessageShake'>Please Fill in all the fields</span>";
+		setTimeout(function(){document.getElementById("walletExchangeErrorMessage").innerHTML = "";},4000)
+	}else{ 
+		/*AJAX Functionality*/
+		/*Declare variables*/
+		var exchangeWalletAmount = "RandomInput";
+		var data = "exchangeWalletAmount="+exchangeWalletAmount+"&walletCredit="+walletCredit+"&walletDebit="+walletDebit+"&walletExchangeAmount="+walletExchangeAmount+"&username="+username;
+		/*Declare XML*/
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		/*AJAX Methods*/
+		xhr.open("POST","conditions.php",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					eachResponse=this.responseText.split("-period-");
+					if(eachResponse[0]=='insufficientBalance'){
+						document.getElementById("walletExchangeErrorMessage").innerHTML = "<span class='errorMessageShake'>Insufficient Balance in "+walletDebit+"</span>";
+						setTimeout(function(){document.getElementById("walletExchangeErrorMessage").innerHTML = "";},4000)
+					}else if(eachResponse[0]=='exchangeDone'){
+						document.getElementById("walletExchangeErrorMessage").innerHTML = "<span class='successMessage'>&#8377;"+walletExchangeAmount+" added from "+walletDebit+" to "+walletCredit+" Successfully!</span>";
+						setTimeout(function(){document.getElementById("walletExchangeErrorMessage").innerHTML = '';},4000);
+						document.getElementById("allWalletList").innerHTML=eachResponse[1];
+						document.getElementById("walletHistory").innerHTML=eachResponse[2];
+						/*Clearing Form*/
+						document.getElementById("walletExchangeAmount").value="";
+						document.getElementById("walletDebit").value="";
+						document.getElementById("walletCredit").value="";
+					}
+				}
+			}
+		}
+	}
+	document.getElementById("walletExchangeSubmit").innerHTML = "SEND";
+}
+
+
+/*Show Wallet Divs*/
+function showWalletDiv(type){
+	closeWalletDiv();
+	if(document.getElementById(type).style.display=="block"){
+		document.getElementById(type).style.display="none";
+	}else{
+		document.getElementById(type).style.display="block";
+	}
+}
+
+/*Close Wallet Div*/
+function closeWalletDiv(){
+	document.getElementById("addWalletData").style.display="none";
+	document.getElementById("allWalletList").style.display="none";
+	document.getElementById("addMoneyToWallet").style.display="none";
+	document.getElementById("walletHistory").style.display="none";
+}
+
+/*Edit wallet data*/
+function showEditWallet(walletId){
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var showEditWallet = "RandomInput";
+	var data = "showEditWallet="+showEditWallet+"&walletId="+walletId;
+	document.getElementById("editWalletDiv").style.display = "block";
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				eachResponse = this.responseText.split("-period-");
+				document.getElementById("editWalletDiv").innerHTML = eachResponse[0];
+				document.getElementById("editWalletName"+walletId).innerHTML = eachResponse[1];
+				document.getElementById("editWalletAmount"+walletId).innerHTML = eachResponse[2];
+			}
+		}
+	}
+}
+
+/*Edit Wallet*/
+function confirmEditWallet(id,oldWalletName){
+	var walletId = id;
+	var oldWalletName=oldWalletName;
+	var walletName = document.getElementById("editWalletName"+walletId).value;
+	var walletAmount = document.getElementById("editWalletAmount"+walletId).value;
+	var username = document.getElementById("username").value;
+	/*Validation*/
+	if((walletAmount == '') || (walletName == '')){
+		document.getElementById("editWalletErrorMessage").innerHTML = "<span class = 'errorMessageShake'>Fill in the required fields.</span>";
+	}else if(isNaN(walletAmount)){
+		document.getElementById("editWalletErrorMessage").innerHTML = "<span class = 'errorMessageShake'>Enter only numbers in amount.</span>";
+	}else{
+		/*AJAX Functionality*/
+		/*Declare variables*/
+		var editWallet = "RandomInput";
+		var data = "editWallet="+editWallet+"&walletId="+walletId+"&walletAmount="+walletAmount+"&walletName="+walletName+"&username="+username+"&oldWalletName="+oldWalletName;
+		/*Declare XML*/
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		/*AJAX Methods*/
+		xhr.open("POST","conditions.php",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					document.getElementById("editWalletErrorMessage").innerHTML = "<span class = 'successMessage'>Details Edited</span>";
+					setTimeout(function(){document.getElementById("editWalletErrorMessage").innerHTML = "<div class = 'loaderButton'></div>";},500)
+					setTimeout(function(){document.getElementById("editWalletDiv").innerHTML = "";},1000);
+					var eachResponse = this.responseText.split("-period-");
+					document.getElementById("allWalletList").innerHTML=eachResponse[1];
+					document.getElementById("addMoneyToWallet").innerHTML=eachResponse[2];
+					document.getElementById("expenseWalletList").innerHTML=eachResponse[3];
+					document.getElementById("incomeWalletList").innerHTML=eachResponse[4];
+				}
+			}
+		}
+	}
+}
+
+/*Show delete Wallet*/
+function showDeleteWallet(id){
+	var walletId = id;
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var showDeleteWallet = "RandomInput";
+	var data = "showDeleteWallet="+showDeleteWallet+"&walletId="+walletId;
+	document.getElementById("deleteWalletDiv").style.display = "block";
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("deleteWalletDiv").innerHTML = this.responseText;
+			}
+		}
+	}
+}
+
+/*Delete Wallet*/
+function confirmDeleteWallet(id,walletName){
+	var walletId = id;
+	var username=document.getElementById("username").value;
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var deleteWallet = "RandomInput";
+	var data = "deleteWallet="+deleteWallet+"&walletId="+walletId+"&username="+username+"&walletName="+walletName;
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("deleteWalletErrorMessage").innerHTML = "<span class = 'successMessage'>Wallet Deleted Successfully!</span>";
+				setTimeout(function(){document.getElementById("deleteWalletErrorMessage").innerHTML = "<div class = 'loaderButton'></div>";},500)
+				setTimeout(function(){document.getElementById("deleteWalletDiv").innerHTML = "";},1000);
+				/*Update New List*/
+				var eachResponse = this.responseText.split("-period-");
+				document.getElementById("allWalletList").innerHTML=eachResponse[0];
+				document.getElementById("addMoneyToWallet").innerHTML=eachResponse[1];
+				document.getElementById("expenseWalletList").innerHTML=eachResponse[2];
+				document.getElementById("incomeWalletList").innerHTML=eachResponse[3];
+			}
+		}
+	}
+}
+
+/*Delete Wallet History*/
+function deleteWalletHistory(id){
+	var walletId = id;
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var showDeleteWalletHistory = "RandomInput";
+	var data = "showDeleteWalletHistory="+showDeleteWalletHistory+"&walletId="+walletId;
+	document.getElementById("deleteWalletDiv").style.display = "block";
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("deleteWalletDiv").innerHTML = this.responseText;
+			}
+		}
+	}
+}
+
+/*Delete Wallet History*/
+function confirmDeleteWalletHistory(id){
+	var walletId = id;
+	var username=document.getElementById("username").value;
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var deleteWalletHistory = "RandomInput";
+	var data = "deleteWalletHistory="+deleteWalletHistory+"&walletId="+walletId+"&username="+username;
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("deleteWalletErrorMessage").innerHTML = "<span class = 'successMessage'>Transaction Deleted Successfully!</span>";
+				setTimeout(function(){document.getElementById("deleteWalletErrorMessage").innerHTML = "<div class = 'loaderButton'></div>";},500)
+				setTimeout(function(){document.getElementById("deleteWalletDiv").innerHTML = "";},1000);
+				/*Update New List*/
+				var eachResponse = this.responseText.split("-period-");
+				document.getElementById("allWalletList").innerHTML=eachResponse[0];
+				document.getElementById("addMoneyToWallet").innerHTML=eachResponse[1];
+				document.getElementById("expenseWalletList").innerHTML=eachResponse[2];
+				document.getElementById("incomeWalletList").innerHTML=eachResponse[3];
+				document.getElementById("walletHistory").innerHTML=eachResponse[4];
+			}
+		}
+	}
+}
+
+function showWalletButtons(){
+	if(document.getElementById("walletButtons").style.display=="block"){
+		document.getElementById("walletButtons").style.display="none";
+		closeWalletDiv();
+		document.getElementById("walletActionDiv").innerHTML="<button type='button' id='showWalletButtons' class='basicButtonOuter smallButton' onclick='showWalletButtons()'>Wallet Details</button>";
+	}else{
+		document.getElementById("walletButtons").style.display="block";
+		showWalletDiv('allWalletList');
+		document.getElementById("walletActionDiv").innerHTML="<button type='button' class='redButton' onclick='showWalletButtons()'>CLOSE</button>";
+	}
 }
