@@ -45,10 +45,10 @@ if(isset($_POST['login'])){
 				$_SESSION['id'] = $rowUser['id'];
 				$_SESSION['username'] = $rowUser['username'];
 				if($_POST['autoLogin']=='enabled'){
-					setcookie('autoLogin','yes',time()+3600*5,'/');
-					setcookie('username',$rowUser['username'],time()+3600*5,'/');
+					setcookie('autoLogin','yes',time()+18000,'/');
+					setcookie('username',$rowUser['username'],time()+18000,'/');
 					$encID=(149118912*$rowUser['id'])+149118912;
-					setcookie('userID',$encID,time()+3600*5,'/');
+					setcookie('userID',$encID,time()+18000,'/');
 				}
 				echo 'loginSuccess';
 				exit();
@@ -416,6 +416,7 @@ if(isset($_POST['showEditExpenses'])){
 				Category: <br><textarea class = "editTextArea" id="editExpenseCategory'.$rowExpenses['id'].'" list = "categoryOptions" placeholder = "Edit Category">
 				</textarea><br><br>
 				Amount: <br><textarea class = "editTextArea" id="editExpenseAmount'.$rowExpenses['id'].'" placeholder = "Edit Amount"></textarea><br><br>
+				Wallet: <br><textarea class = "editTextArea" id="editExpenseWallet'.$rowExpenses['id'].'" placeholder = "Edit Wallet"></textarea><br><br>
 				Details: <br><textarea class = "editTextArea" id="editExpenseDetails'.$rowExpenses['id'].'" placeholder="Edit Details"></textarea><br><br>
 				<div id="editExpenseErrorMessage"></div><br><br>
 				<button class = "confirmButton closeButton" onclick = "confirmEdit('.$expensesId.')">Done</button>
@@ -425,7 +426,8 @@ if(isset($_POST['showEditExpenses'])){
 			echo $rowExpenses['amount'].'-period-'.
 			$rowExpenses['category'].'-period-'.
 			date('d-m-Y',strtotime($rowExpenses['date'])).'-period-'.
-			$rowExpenses['details'];
+			$rowExpenses['details'].'-period-'.
+			$rowExpenses['wallet'];
 		}
 	}
 }
@@ -496,7 +498,8 @@ if(isset($_POST['editExpenses'])){
 	$expensesAmount = $_POST['expensesAmount'];
 	$expensesCategory = $_POST['expensesCategory'];
 	$expensesDetails = $_POST['expensesDetails'];
-	$updateExpenses = mysqli_query($conn, "UPDATE expenses SET date = '$expensesDate', amount = '$expensesAmount', category = '$expensesCategory', details = '$expensesDetails' WHERE id = '$expensesId'");
+	$expensesWallet = $_POST['expensesWallet'];
+	$updateExpenses = mysqli_query($conn, "UPDATE expenses SET date = '$expensesDate', amount = '$expensesAmount', category = '$expensesCategory', details = '$expensesDetails', wallet='$expensesWallet' WHERE id = '$expensesId'");
 	/*Check Income or Expense*/
 	$expensesType = checkIncomeOrExpense($expensesId,$conn);
 	/*Check Username*/
@@ -527,7 +530,8 @@ if(isset($_POST['showDeleteExpenses'])){
 				<div>Amount: <b>&#8377;'.number_format($rowExpenses['amount']).'</b></div>
 				<div>Category: <b>'.ucwords($rowExpenses['category']).'</b></div>
 				<div>Date: <b>'.date('d-M-Y (D)', strtotime($rowExpenses['date'])).'</b></div>
-				<div>Details: <b>'.$rowExpenses['category'].'</b><br><br></div>
+				<div>Details: <b>'.$rowExpenses['details'].'</b><br><br></div>
+				<div>Wallet: <b>'.$rowExpenses['wallet'].'</b><br><br></div>
 				<div id="deleteExpenseErrorMessage"></div><br>
 				<button class = "expensesDeleteButton" onclick = "confirmDelete('.$expensesId.')">Delete</button>
 				<button class = "expensesEditButton" onclick = "hideDeleteExpense()">Cancel</button>
@@ -536,7 +540,8 @@ if(isset($_POST['showDeleteExpenses'])){
 			echo $rowExpenses['amount'].'-period-'.
 			$rowExpenses['category'].'-period-'.
 			$rowExpenses['date'].'-period-'.
-			$rowExpenses['details'];
+			$rowExpenses['details'].'-period-'.
+			$rowExpenses['wallet'];
 		}
 	}
 }
@@ -780,6 +785,7 @@ if (isset($_POST['confirmEditProfile'])) {
 		if($type == 'username'){
 			$updater = mysqli_query($conn, "UPDATE users SET username = '$newValue' WHERE id = '$id'");	
 			$updater = mysqli_query($conn, "UPDATE expenses SET username = '$newValue' WHERE username = '$oldValue'");	
+			$updater = mysqli_query($conn, "UPDATE wallet SET walletUsername = '$newValue' WHERE walletUsername = '$oldValue'");	
 			echo 'updateDone';	
 		}else if($type == 'email'){
 			$updater = mysqli_query($conn, "UPDATE users SET email = '$newValue' WHERE id = '$id'");	
@@ -1026,6 +1032,78 @@ if(isset($_POST['deleteWalletHistory'])){
 	getWalletHistory($conn,$username);
 }
 
+/*Show Edit Wallet History*/
+if(isset($_POST['showEditWalletHistory'])){
+	$walletId = $_POST['walletId'];
+	$checkWallet = mysqli_query($conn, "SELECT * FROM wallethistory WHERE id = '$walletId'");
+	if(mysqli_num_rows($checkWallet)>0){
+		while($rowWallet = mysqli_fetch_assoc($checkWallet)){
+			$walletName=$rowWallet['walletName'];
+			$username=$rowWallet['walletUsername'];
+			echo'<div class="editOuterDiv" style="z-index:3"><div class="editInnerDiv">
+				<br><br><div class = "headingName">Transaction Details</div><hr><br>';
+				echo'<div>Transaction From: <textarea class = "editTextArea" id="editWalletHistoryFrom'.$rowWallet['id'].'"></textarea></div>';
+				if($rowWallet['walletNameTo']!='walletExpenseOK'){echo'<div>Transaction To: <textarea class = "editTextArea" id="editWalletHistoryTo'.$rowWallet['id'].'"></textarea></div>';}
+				echo'<div>Transaction Amount: &#8377;<textarea class = "editTextArea" id="editWalletHistoryValue'.$rowWallet['id'].'"></textarea></div>
+				<div>Transaction Date: <textarea class = "editTextArea" id="editWalletHistoryDate'.$rowWallet['id'].'"></textarea></div>';
+				if($rowWallet['type']!='walletTransfer'){
+					echo'<div>Transaction Type: <textarea class = "editTextArea" id="editWalletHistoryType'.$rowWallet['id'].'"></textarea></div>
+					<div>Transaction Category: <textarea class = "editTextArea" id="editWalletHistoryCategory'.$rowWallet['id'].'"></textarea></div>
+					<div>Transaction Details: <textarea class = "editTextArea" id="editWalletHistoryDetails'.$rowWallet['id'].'"></textarea></div>';
+				}
+				echo '<input type="hidden" id="currentWalletValue'.$rowWallet['id'].'" value="'.$rowWallet['walletValue'].'">';//Send Current Wallet Value to JS
+				echo'<div id="editWalletErrorMessage"></div><br>
+				<button class="greenButton" onclick = "confirmEditWalletHistory(\''.$walletId.'\')">Done</button>
+				<button class="redButtonOuter" onclick = "hideEditWallet()">Cancel</button>
+			</div></div>';
+			//Send Data to JS
+			echo'-period-';
+			echo $rowWallet['walletNameFrom'];
+			echo'-period-';
+			echo $rowWallet['walletNameTo'];
+			echo'-period-';
+			echo $rowWallet['walletValue'];
+			echo'-period-';
+			echo date('d-m-Y',strtotime($rowWallet['walletTransferDate']));
+			echo'-period-';
+			echo $rowWallet['type'];
+			echo'-period-';
+			echo $rowWallet['category'];
+			echo'-period-';
+			echo $rowWallet['details'];
+		}
+	}
+}
+
+/*Confirm Edit Wallet History*/
+if(isset($_POST['editWalletHistory'])){
+	$walletId = $_POST['walletId'];
+	$walletHistoryFrom = $_POST['walletHistoryFrom'];
+	$walletHistoryTo = $_POST['walletHistoryTo'];
+	$walletHistoryValue = $_POST['walletHistoryValue'];
+	$walletHistoryDate = date('Y-m-d',strtotime($_POST['walletHistoryDate']));
+	$walletHistoryType = $_POST['walletHistoryType'];
+	$walletHistoryCategory = $_POST['walletHistoryCategory'];
+	$walletHistoryDetails = $_POST['walletHistoryDetails'];
+	$bufferWalletValue = $_POST['bufferWalletValue'];
+	$username = $_POST['username'];
+	
+	$updateExpenses = mysqli_query($conn, "UPDATE wallethistory SET walletNameFrom = '$walletHistoryFrom', walletNameTo = '$walletHistoryTo', walletValue = '$walletHistoryValue', walletTransferDate = '$walletHistoryDate', type='$walletHistoryType', category='$walletHistoryCategory', details='$walletHistoryDetails' WHERE id = '$walletId'");
+	if($walletHistoryTo == 'walletExpenseOK'){
+		$OldWalletValFrom = getWalletValue($conn,$username,$walletHistoryFrom);
+		$NewWalletValFrom = $OldWalletValFrom + $bufferWalletValue;
+		mysqli_query($conn, "UPDATE wallet SET walletValue='$NewWalletValFrom' WHERE walletName = '$walletHistoryFrom' AND walletUsername = '$username'");
+	}else{
+		$OldWalletValFrom = getWalletValue($conn,$username,$walletHistoryFrom);
+		$NewWalletValFrom = $OldWalletValFrom + $bufferWalletValue;
+		$OldWalletValTo = getWalletValue($conn,$username,$walletHistoryTo);
+		$NewWalletValTo = $OldWalletValTo - $bufferWalletValue;
+		mysqli_query($conn, "UPDATE wallet SET walletValue='$NewWalletValTo' WHERE walletName = '$walletHistoryTo' AND walletUsername = '$username'");
+		mysqli_query($conn, "UPDATE wallet SET walletValue='$NewWalletValFrom' WHERE walletName = '$walletHistoryFrom' AND walletUsername = '$username'");
+	}
+	
+}
+
 
 /*Income or Expense Checker*/
 function checkIncomeOrExpense($id,$conn){
@@ -1172,15 +1250,15 @@ function getWalletHistory($conn,$username){
 		echo'<div class="tableContainer"><table class="analysisTable">
 			<thead>
 				<tr>
-					<th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Date of Transfer</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Delete</th>
+					<th>Date of Transfer</th><th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>';
 				while($rowWalletHistory=mysqli_fetch_assoc($walletCheckHistory)){
 					echo'<tr>
-						<td>'.$rowWalletHistory['walletNameFrom'].'</td>';
+						<td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td><td>'.$rowWalletHistory['walletNameFrom'].'</td>';
 						if($rowWalletHistory['walletNameTo']=='walletExpenseOK'){echo'<td>-</td>';}else{echo'<td>'.$rowWalletHistory['walletNameTo'].'</td>';}
-						echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td><td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td>';
+						echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td>';
 						if($rowWalletHistory['type']=='walletTransfer'){
 							echo'<td>-</td>
 							<td>-</td><td>-</td>';
@@ -1197,6 +1275,17 @@ function getWalletHistory($conn,$username){
 	}else{
 		echo 'No transactions found.';
 	}
+}
+
+function getWalletValue($conn,$walletUsername,$walletName){
+	$checkWalletVal = mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername = '$walletUsername' AND walletName = '$walletName' ORDER BY id DESC LIMIT 1");
+	$walletVal = '';
+	if(mysqli_num_rows($checkWalletVal)>0){
+		while($rowWallet = mysqli_fetch_assoc($checkWalletVal)){
+			$walletVal = $rowWallet['walletValue'];
+		}
+	}
+	return $walletVal;
 }
 
 ?>

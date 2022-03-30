@@ -203,15 +203,15 @@
 					if((mysqli_num_rows($getTodayExpenseCount)>0) || (mysqli_num_rows($getTodayIncomeCount)>0) || (mysqli_num_rows($getYesterdayExpenseCount)>0) || (mysqli_num_rows($getYesterdayIncomeCount)>0) || (mysqli_num_rows($getThisMonthExpenseCount)>0) || (mysqli_num_rows($getThisMonthIncomeCount)>0)){
 						echo '<div style = "overflow:hidden;padding:5px"><span id = "marquee">
 							<div class = "marqueeDiv">
-								<div class = "summaryTime sideHeading">Today: </div><a id = "marqueeTodayExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.$todayDateTime.'\', \''.$totalTodayExpenses.'\')">-&#8377;'.number_format($totalTodayExpenses).';</a> <a id = "marqueeTodayIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.$todayDateTime.'\', \''.$totalTodayIncome.'\')">+&#8377;'.number_format($totalTodayIncome).'</a>
+								<div class = "summaryTime sideHeading">Today : </div><a id = "marqueeTodayExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.$todayDateTime.'\', \''.$totalTodayExpenses.'\')">-&#8377;'.number_format($totalTodayExpenses).';</a> <a id = "marqueeTodayIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.$todayDateTime.'\', \''.$totalTodayIncome.'\')">+&#8377;'.number_format($totalTodayIncome).'</a>
 							</div>
 							<div class = "inlineSeparator"></div>
 							<div class = "marqueeDiv">
-								<div class = "summaryTime sideHeading">Yesterday: </div><a id = "marqueeYesterdayExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$yesterdayMonth.'\', \''.$yesterdayYear.'\', \''.$yesterdayDateTime.'\', \''.$totalYesterdayExpenses.'\')">-&#8377;'.number_format($totalYesterdayExpenses).';</a> <a id = "marqueeYesterdayIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$yesterdayMonth.'\', \''.$yesterdayYear.'\', \''.$yesterdayDateTime.'\', \''.$totalYesterdayIncome.'\')">+&#8377;'.number_format($totalYesterdayIncome).'</a>
+								<div class = "summaryTime sideHeading">Yesterday : </div><a id = "marqueeYesterdayExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$yesterdayMonth.'\', \''.$yesterdayYear.'\', \''.$yesterdayDateTime.'\', \''.$totalYesterdayExpenses.'\')">-&#8377;'.number_format($totalYesterdayExpenses).';</a> <a id = "marqueeYesterdayIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$yesterdayMonth.'\', \''.$yesterdayYear.'\', \''.$yesterdayDateTime.'\', \''.$totalYesterdayIncome.'\')">+&#8377;'.number_format($totalYesterdayIncome).'</a>
 							</div>
 							<div class = "inlineSeparator"></div>
 							<div class = "marqueeDiv">
-								<div class = "summaryTime sideHeading">This Month: </div><a id = "marqueeThisMonthExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.'thisIsMonth'.'\', \''.$totalThisMonthExpenses.'\')">-&#8377;'.number_format($totalThisMonthExpenses).'</a>; <a id = "marqueeThisMonthIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.'thisIsMonth'.'\', \''.$totalThisMonthIncome.'\')">+&#8377;'.number_format($totalThisMonthIncome).'</a>
+								<div class = "summaryTime sideHeading">This Month : </div><a id = "marqueeThisMonthExpense" href = "#" class = "errorMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."expense".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.'thisIsMonth'.'\', \''.$totalThisMonthExpenses.'\')">-&#8377;'.number_format($totalThisMonthExpenses).'</a>; <a id = "marqueeThisMonthIncome" href = "#" class = "successMessage inlineBlockDiv" onclick = "showIndividualExpenses(\''."income".'\', \''.$thisMonth.'\', \''.$thisYear.'\', \''.'thisIsMonth'.'\', \''.$totalThisMonthIncome.'\')">+&#8377;'.number_format($totalThisMonthIncome).'</a>
 							</div>
 						</span></div>';
 					}else if((mysqli_num_rows($getThisYearExpenseCount)>0) || (mysqli_num_rows($getThisYearIncomeCount)>0)){
@@ -310,15 +310,15 @@
 							echo'<div class="tableContainer"><table class="analysisTable">
 								<thead>
 									<tr>
-										<th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Date of Transfer</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Delete</th>
+										<th>Date of Transfer</th><th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Edit</th><th>Delete</th>
 									</tr>
 								</thead>
 								<tbody>';
 									while($rowWalletHistory=mysqli_fetch_assoc($walletCheckHistory)){
 										echo'<tr>
-											<td>'.$rowWalletHistory['walletNameFrom'].'</td>';
+											<td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td><td>'.$rowWalletHistory['walletNameFrom'].'</td>';
 											if($rowWalletHistory['walletNameTo']=='walletExpenseOK'){echo'<td>-</td>';}else{echo'<td>'.$rowWalletHistory['walletNameTo'].'</td>';}
-											echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td><td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td>';
+											echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td>';
 											if($rowWalletHistory['type']=='walletTransfer'){
 												echo'<td>-</td>
 												<td>-</td><td>-</td>';
@@ -326,7 +326,8 @@
 												echo'<td>'.$rowWalletHistory['type'].'</td>
 												<td>'.$rowWalletHistory['category'].'</td><td>'.$rowWalletHistory['details'].'</td>';
 											}
-											echo'<td><button class = "expensesDeleteButton" onclick="deleteWalletHistory('.$rowWalletHistory['id'].')">Delete</button></td>
+											echo'<td><button class = "expensesEditButton" onclick="editWalletHistory('.$rowWalletHistory['id'].')">Edit</button></td>
+												<td><button class = "expensesDeleteButton" onclick="deleteWalletHistory('.$rowWalletHistory['id'].')">Delete</button></td>
 										</tr>';
 									}
 								echo'</tbody>
