@@ -46,3 +46,10 @@ CREATE TABLE wallethistory (
 
 /*Change DATE to DATETIME in date*/
 ALTER TABLE 'expenses' CHANGE 'date' 'date' DATETIME NOT NULL; 		/*No need if DATETIME kept in above query*/
+
+/*Website Version*/
+CREATE TABLE version (
+	id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(256) NOT NULL,
+	version VARCHAR(256) NOT NULL
+);

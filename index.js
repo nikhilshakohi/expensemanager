@@ -1028,16 +1028,17 @@ function walletExchange(){
 	var walletExchangeAmount=document.getElementById("walletExchangeAmount").value;
 	var walletDebit=document.getElementById("walletDebit").value;
 	var walletCredit=document.getElementById("walletCredit").value;
+	var walletExchangeDate=document.getElementById("walletTransferDate").value;
 	document.getElementById("walletExchangeSubmit").innerHTML = "<div class='loaderButton'></div>";
 	/*Validations*/
-	if(walletDebit == '' || walletCredit == '' || walletExchangeAmount == ''){ /*Empty Fields*/
+	if(walletDebit == '' || walletCredit == '' || walletExchangeAmount == '' || walletExchangeDate == ''){ /*Empty Fields*/
 		document.getElementById("walletExchangeErrorMessage").innerHTML = "<span class='errorMessageShake'>Please Fill in all the fields</span>";
 		setTimeout(function(){document.getElementById("walletExchangeErrorMessage").innerHTML = "";},4000)
 	}else{ 
 		/*AJAX Functionality*/
 		/*Declare variables*/
 		var exchangeWalletAmount = "RandomInput";
-		var data = "exchangeWalletAmount="+exchangeWalletAmount+"&walletCredit="+walletCredit+"&walletDebit="+walletDebit+"&walletExchangeAmount="+walletExchangeAmount+"&username="+username;
+		var data = "exchangeWalletAmount="+exchangeWalletAmount+"&walletCredit="+walletCredit+"&walletDebit="+walletDebit+"&walletExchangeAmount="+walletExchangeAmount+"&walletExchangeDate="+walletExchangeDate+"&username="+username;
 		/*Declare XML*/
 		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
 		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
@@ -1073,10 +1074,35 @@ function walletExchange(){
 /*Show Wallet Divs*/
 function showWalletDiv(type){
 	closeWalletDiv();
-	if(document.getElementById(type).style.display=="block"){
-		document.getElementById(type).style.display="none";
-	}else{
-		document.getElementById(type).style.display="block";
+	document.getElementById(type).style.display="block";
+	//Update new values while showing div
+	if(type=="allWalletList" || type=="walletHistory"){
+		document.getElementById(type).innerHTML="<br><div class='loaderButton'></div><br>";
+		var username=document.getElementById("username").value;
+		/*AJAX Functionality*/
+		/*Declare variables*/
+		var updateWalletDetails = "RandomInput";
+		var data = "updateWalletDetails="+updateWalletDetails+"&username="+username;
+		/*Declare XML*/
+		if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+		else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+		/*AJAX Methods*/
+		xhr.open("POST","conditions.php",true);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(data);
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					eachResponse=this.responseText.split("-period-");
+					if(type=='allWalletList'){
+						document.getElementById("allWalletList").innerHTML=eachResponse[0];
+					}
+					else if(type=='walletHistory'){
+						document.getElementById("walletHistory").innerHTML=eachResponse[1];
+					}
+				}
+			}
+		}	
 	}
 }
 
@@ -1364,7 +1390,57 @@ function showWalletButtons(){
 		document.getElementById("walletActionDiv").innerHTML="<button type='button' id='showWalletButtons' class='basicButtonOuter smallButton' onclick='showWalletButtons()'>Wallet Details</button>";
 	}else{
 		document.getElementById("walletButtons").style.display="block";
-		showWalletDiv('allWalletList');
+		showWalletDiv("allWalletList");
 		document.getElementById("walletActionDiv").innerHTML="<button type='button' class='redButton' onclick='showWalletButtons()'>CLOSE</button>";
+	}
+}
+
+function updateWebsite(){
+	var username=document.getElementById("username").value;
+	document.getElementById("updateWebsiteButton").innerHTML = "Updating... Do not Refresh..<div class = 'loaderButton'></div>";
+	setTimeout(function () { document.getElementById("updateWebsiteButton").innerHTML = "<div class = 'loaderButton'></div>"; }, 1500);
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var updateWebsite = "RandomInput";
+	var data = "updateWebsite=" + updateWebsite + "&username=" + username;
+	/*Declare XML*/
+	if (window.XMLHttpRequest) { var xhr = new XMLHttpRequest(); }
+	else if (window.ActiveXObject) { var xhr = new ActiveXObject("Microsoft.XMLHTTP"); }
+	/*AJAX Methods*/
+	xhr.open("POST", "conditions.php", true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState == 4) {
+			if (xhr.status == 200) {
+				if(this.responseText=='UpdateDone'){
+					setTimeout(function () { document.getElementById("updateWebsiteButton").style.display="none"; }, 2000);
+					document.getElementById("updateWebsiteButton").innerHTML="Update Done!";
+				}else if(this.responseText=='UpdateNotDone'){
+					setTimeout(function () { document.getElementById("updateWebsiteButton").innerHTML="Something Went Wrong!"; }, 2000);
+				}else{
+					setTimeout(function () { document.getElementById("updateWebsiteButton").innerHTML="Something Fishy!!!"; }, 2000);
+				}
+			}
+		}
+	}
+}
+
+//Filter Wallet
+function filterWalletHistory(wallet){
+	var allRows=document.getElementsByClassName('allWalletHistoryRows');
+	if(wallet!='all'){
+		for(var i = 0; i < allRows.length; i++){
+			allRows[i].style.display = "none";
+		}
+		//Display Required wallet Details
+		var reqRows=document.getElementsByClassName(wallet+"WalletDetails");
+		for(var i = 0; i < reqRows.length; i++){
+			reqRows[i].style.display = "table-row";
+		}
+	}else{
+		for(var i = 0; i < allRows.length; i++){
+			allRows[i].style.display = "table-row";
+		}
 	}
 }
