@@ -401,7 +401,7 @@ label{user-select: none;}
 #calcIcon{
 	position: fixed;
 	cursor: pointer;
-	margin: 20px;padding: 15px 20px 15px 10px;
+	margin: 20px 20px 30px 20px;padding: 15px 20px 15px 10px;
 	right: 0; bottom: 0;z-index: 3;
 	width: 25px; height: 25px;
 	border-radius: 50%;
@@ -449,6 +449,7 @@ label{user-select: none;}
 	overflow: auto;
 	padding: 5px;
 	text-align: center;
+	max-height: 1000px;
 }
 td, th{background-color: gainsboro;white-space: nowrap;padding: 10px;border: 1px solid white;}
 th{background-color: lightblue;}
@@ -495,7 +496,7 @@ th{background-color: lightblue;}
 #addWalletData,#allWalletList,#addMoneyToWallet{display: none;animation: Zoom2 0.4s ease-in-out;}
 #currentWallets{overflow: auto;display: flex;justify-content: center;flex-wrap: wrap;}
 .eachCurrentWallet{border-right: 1px solid gainsboro;padding: 20px 10px;margin: 5px;display: block;background-color: rgba(50, 250, 50, 0.2);border-radius: 20px;}
-#walletActionDiv{animation: fadeWithDelay 4s ease-in-out;display: flex;justify-content: flex-end;}
+#walletActionDiv{animation: fadeWithDelay 3s ease-in-out;display: flex;justify-content: flex-end;}
 #walletHistory{display: none;}
 #walletButtons{display:none}
 

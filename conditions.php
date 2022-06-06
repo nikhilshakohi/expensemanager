@@ -45,10 +45,10 @@ if(isset($_POST['login'])){
 				$_SESSION['id'] = $rowUser['id'];
 				$_SESSION['username'] = $rowUser['username'];
 				if($_POST['autoLogin']=='enabled'){
-					setcookie('autoLogin','yes',time()+18000,'/');
-					setcookie('username',$rowUser['username'],time()+18000,'/');
+					setcookie('autoLogin','yes',time()+180000,'/');
+					setcookie('username',$rowUser['username'],time()+180000,'/');
 					$encID=(149118912*$rowUser['id'])+149118912;
-					setcookie('userID',$encID,time()+18000,'/');
+					setcookie('userID',$encID,time()+180000,'/');
 				}
 				echo 'loginSuccess';
 				exit();
@@ -115,33 +115,33 @@ if(isset($_POST['addExpense'])){
 		$totalTodayExpenses = 0; $totalTodayIncome = 0;
 		$totalYesterdayExpenses = 0; $totalYesterdayIncome = 0;
 		$totalThisMonthExpenses = 0; $totalThisMonthIncome = 0;
-		$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
-		$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+		$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+		$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
 		if(mysqli_num_rows($getTodayExpenseCount)>0){while($rowTodayExpense = mysqli_fetch_assoc($getTodayExpense)){$totalTodayExpenses = $rowTodayExpense['todayExpense'];}}
 
 		/*Calculate Today Incomes*/
-		$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
-		$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+		$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+		$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
 		if(mysqli_num_rows($getTodayIncomeCount)>0){while($rowTodayIncome = mysqli_fetch_assoc($getTodayIncome)){$totalTodayIncome = $rowTodayIncome['todayIncome'];}}
 
 		/*Calculate Yesterday Expenses*/
-		$getYesterdayExpense = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
-		$getYesterdayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+		$getYesterdayExpense = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+		$getYesterdayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
 		if(mysqli_num_rows($getYesterdayExpenseCount)>0){while($rowYesterdayExpense = mysqli_fetch_assoc($getYesterdayExpense)){$totalYesterdayExpenses = $rowYesterdayExpense['yesterdayExpense'];}}
 
 		/*Calculate Yesterday Incomes*/
-		$getYesterdayIncome = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
-		$getYesterdayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+		$getYesterdayIncome = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+		$getYesterdayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
 		if(mysqli_num_rows($getYesterdayIncomeCount)>0){while($rowYesterdayIncome = mysqli_fetch_assoc($getYesterdayIncome)){$totalYesterdayIncome = $rowYesterdayIncome['yesterdayIncome'];}}
 
 		/*Calculate Month's Expenses*/
-		$getThisMonthExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-		$getThisMonthExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+		$getThisMonthExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+		$getThisMonthExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 		if(mysqli_num_rows($getThisMonthExpenseCount)>0){while($rowThisMonthExpense = mysqli_fetch_assoc($getThisMonthExpense)){$totalThisMonthExpenses = $rowThisMonthExpense['thisMonthExpense'];}}
 
 		/*Calculate Month's Incomes*/
-		$getThisMonthIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthIncome FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-		$getThisMonthIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+		$getThisMonthIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+		$getThisMonthIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 		if(mysqli_num_rows($getThisMonthIncomeCount)>0){while($rowThisMonthIncome = mysqli_fetch_assoc($getThisMonthIncome)){$totalThisMonthIncome = $rowThisMonthIncome['thisMonthIncome'];}}
 		echo '-period-'.number_format($totalTodayExpenses).'-period-'.number_format($totalTodayIncome).
 		'-period-'.number_format($totalYesterdayExpenses).'-period-'.number_format($totalYesterdayIncome).
@@ -332,39 +332,6 @@ if(isset($_POST['showBudget'])){
 		<tbody>';
 
 		while($rowBudget = mysqli_fetch_assoc($getBudget)){
-			/*echo '<div class = "budgetList">
-				<div>
-					<span>
-						'.date('d-M-Y (D)', strtotime($rowBudget['date'])).'
-					</span> 
-					- 
-					<i>
-						'.ucwords($rowBudget['category']).'
-					</i>
-					 -  
-					<b>
-						&#8377;
-						<span ';
-							if($rowBudget['type'] == 'income'){
-								echo ' class = "successMessage"';
-							}else{
-								echo ' class = "errorMessage"';
-							}
-							echo ' >'.number_format($rowBudget['amount']); 
-						echo'</span>
-					</b>';
-					if($rowBudget['type'] == 'income'){
-						echo '&#8593;';
-					}else{
-						echo '&#8595;';
-					}
-					echo '<div>'.$rowBudget['details'].'</div>
-				</div>
-				<div>
-					<button class = "expensesEditButton" onclick="editExpenses('.$rowBudget['id'].')">Edit</button>
-					<button class = "expensesDeleteButton" onclick="deleteExpenses('.$rowBudget['id'].')">Delete</button>
-				</div>
-			</div>';*/
 			echo '<tr>
 				<td>'.date('d-M-Y (D)', strtotime($rowBudget['date'])).'</td><td>'.ucwords($rowBudget['category']).'</td>
 				<td>&#8377;<span ';
@@ -507,7 +474,7 @@ if(isset($_POST['editExpenses'])){
 	/*Send Type to JS*/
 	echo $expensesType.'-period-';
 	/*Get New Expense Value*/
-	$getExpenses = mysqli_query($conn,"SELECT * FROM expenses WHERE type = '$expensesType' AND username = '$expensesUsername' ORDER BY id DESC");
+	$getExpenses = mysqli_query($conn,"SELECT * FROM expenses WHERE type = '$expensesType' AND category != 'walletTransfer' AND username = '$expensesUsername' ORDER BY id DESC");
 	$totalExpenses = 0;
 	if(mysqli_num_rows($getExpenses)>0){
 		while($rowIncome = mysqli_fetch_assoc($getExpenses)){
@@ -868,7 +835,8 @@ if(isset($_POST['exchangeWalletAmount'])){
 	$walletCredit = mysqli_real_escape_string($conn,$_POST['walletCredit']);
 	$walletDebit = mysqli_real_escape_string($conn,$_POST['walletDebit']);
 	$walletExchangeAmount = mysqli_real_escape_string($conn,$_POST['walletExchangeAmount']);
-	$date=date('Y-m-d', time());
+	$date = mysqli_real_escape_string($conn,$_POST['walletExchangeDate']);
+	//$date=date('Y-m-d', time());
 	/*Get Credit Balance*/
 	$checkWalletCreditBal=mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername='$username' AND walletName='$walletCredit' LIMIT 1");
 	if(mysqli_num_rows($checkWalletCreditBal)>0){
@@ -886,6 +854,12 @@ if(isset($_POST['exchangeWalletAmount'])){
 				mysqli_query($conn,"UPDATE wallet SET walletValue='$newDebitBal' WHERE walletUsername='$username' AND walletName='$walletDebit'");
 				mysqli_query($conn,"UPDATE wallet SET walletValue='$newCreditBal' WHERE walletUsername='$username' AND walletName='$walletCredit'");
 				mysqli_query($conn, "INSERT INTO wallethistory (walletUsername, walletNameFrom, walletNameTo, walletValue, walletTransferDate, type, category, details) VALUES ('$username', '$walletDebit', '$walletCredit', '$walletExchangeAmount', '$date', 'walletTransfer', 'walletTransfer', 'walletTransfer')");
+				/*Update in expenses database*/
+				$newDetails='Wallet Amount Transfered from '.$walletDebit.' to '.$walletCredit;
+				//Wallet expense for Debit Wallet
+				mysqli_query($conn,"INSERT INTO expenses (username, type, amount, date, category, wallet, details) VALUES ('$username', 'expense', '$walletExchangeAmount', '$date', 'walletTransfer', '$walletDebit', '$newDetails')");
+				//Wallet income for Credit Wallet
+				mysqli_query($conn,"INSERT INTO expenses (username, type, amount, date, category, wallet, details) VALUES ('$username', 'income', '$walletExchangeAmount', '$date', 'walletTransfer', '$walletCredit', '$newDetails')");
 				echo'exchangeDone';
 				echo'-period-';
 				getWalletSummary($conn,$username);
@@ -1104,6 +1078,60 @@ if(isset($_POST['editWalletHistory'])){
 	
 }
 
+/*Update Website*/
+if(isset($_POST['updateWebsite'])){
+	//Check if to be updated
+	$checkUpdateStatus='';$accountType='';
+	$username=$_POST['username'];
+	$sqlChkVer=mysqli_query($conn,"SELECT * FROM version WHERE username='$username'");
+	if(mysqli_num_rows($sqlChkVer)>0){
+		$accountType='found';
+		while($rowChkVer=mysqli_fetch_assoc($sqlChkVer)){
+			if($rowChkVer['version']!='2.0'){
+				$checkUpdateStatus='ToBeUpdated';
+			}
+		}
+	}else{
+		$checkUpdateStatus='ToBeUpdated';
+		$accountType='notFound';
+	}
+	//Update Table from wallet history to expenses
+	if($checkUpdateStatus=='ToBeUpdated'){
+		//Get each data from walletHistory
+		$getWalletHistoryData=mysqli_query($conn,"SELECT * FROM wallethistory WHERE walletUsername='$username' AND walletNameTo!='walletExpenseOK'");
+		if(mysqli_num_rows($getWalletHistoryData)>0){
+			echo 'UpdateDone';
+			while($rowEachWalletHistoryData=mysqli_fetch_assoc($getWalletHistoryData)){
+				//Insert this row into expenses
+				$walletAmount=$rowEachWalletHistoryData['walletValue'];
+				$date=$rowEachWalletHistoryData['walletTransferDate'];
+				$walletDebit=$rowEachWalletHistoryData['walletNameFrom'];
+				$walletCredit=$rowEachWalletHistoryData['walletNameTo'];
+				$walletTransferDetails='Wallet Amount Transfered from '.$walletDebit.' to '.$walletCredit;
+				//Expense
+				mysqli_query($conn,"INSERT INTO expenses (username, type, amount, date, category, wallet, details) VALUES ('$username', 'expense', '$walletAmount', '$date', 'walletTransfer', '$walletDebit', '$walletTransferDetails')");
+				//Income
+				mysqli_query($conn,"INSERT INTO expenses (username, type, amount, date, category, wallet, details) VALUES ('$username', 'income', '$walletAmount', '$date', 'walletTransfer', '$walletCredit', '$walletTransferDetails')");
+			}
+			//Update Version
+			if($accountType=='found'){
+				mysqli_query($conn,"UPDATE version SET version='2.0' WHERE username='$username'");
+			}else if($accountType=='notFound'){
+				mysqli_query($conn,"INSERT INTO version (username, version) VALUES ('$username', '2.0')");
+			}
+		}else{
+			echo 'UpdateNotDone';
+		}
+	}
+}
+
+//Update Wallet details on click
+if (isset($_POST['updateWalletDetails'])) {
+	$username=$_POST['username'];
+	getWalletSummary($conn,$username);
+	echo'-period-';
+	getWalletHistory($conn,$username);
+}
 
 /*Income or Expense Checker*/
 function checkIncomeOrExpense($id,$conn){
@@ -1131,7 +1159,7 @@ function checkUsername($id,$conn){
 
 /*Get New Expense Details*/
 function getNewExpenseDetails($conn, $username, $type){
-	$getNewExpense = mysqli_query($conn,"SELECT * FROM expenses WHERE type = '$type' AND username = '$username' ORDER BY id DESC");
+	$getNewExpense = mysqli_query($conn,"SELECT * FROM expenses WHERE type = '$type' AND category != 'walletTransfer' AND username = '$username' ORDER BY id DESC");
 	$totalExpenses = 0;
 	if(mysqli_num_rows($getNewExpense)>0){
 		while($rowExpense = mysqli_fetch_assoc($getNewExpense)){
@@ -1211,6 +1239,7 @@ function getWalletTransferInfo($conn,$username){
 				echo '<option value="'.$rowWallets['walletName'].'">'.$rowWallets['walletName'].'</option>';
 			}	
 		echo'</select><br>
+		<input type="date" id="walletTransferDate" class="expenseInput inputStyle" value="'.$todayDate.'">
 		&#8377;<input type="number" min="0" max="9999999" id="walletExchangeAmount" class="inputStyle" placeholder="Amount"><br>
 		<div id="walletExchangeErrorMessage"></div>
 		<button type="button" id="walletExchangeSubmit" class="submitButton" onclick="walletExchange()">SEND</button>
@@ -1247,26 +1276,45 @@ function getWalletRadioButton($conn,$username){
 function getWalletHistory($conn,$username){
 	$walletCheckHistory=mysqli_query($conn,"SELECT * FROM wallethistory WHERE walletUsername='$username' ORDER BY walletTransferDate DESC");
 	if(mysqli_num_rows($walletCheckHistory)>0){
-		echo'<div class="tableContainer"><table class="analysisTable">
+		echo'<div>';
+			$checkAllWallets=mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername='$username' ORDER BY walletName ASC");
+			if(mysqli_num_rows($checkAllWallets)>0){
+				echo'<input id="allWalletID" type="radio" name="walletHistoryFilter" value="all" checked onchange="filterWalletHistory(\''.'all'.'\')">
+					<label for="allWalletID">All</label>';
+				while($rowEachWallet=mysqli_fetch_assoc($checkAllWallets)){
+					echo'<input id="'.$rowEachWallet['walletName'].'WalletID" type="radio" name="walletHistoryFilter" value="'.$rowEachWallet['walletName'].'"  onchange="filterWalletHistory(\''.$rowEachWallet['walletName'].'\')">
+					<label for="'.$rowEachWallet['walletName'].'WalletID">'.$rowEachWallet['walletName'].'</label>';
+				}
+				echo'<br><br>';
+			}
+		echo'</div>';
+		echo'<div class="tableContainer">
+		<table class="analysisTable">
 			<thead>
 				<tr>
-					<th>Date of Transfer</th><th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Delete</th>
+					<th>Date</th><th>Amount</th><th>From</th><th>To</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Edit</th><th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>';
 				while($rowWalletHistory=mysqli_fetch_assoc($walletCheckHistory)){
-					echo'<tr>
-						<td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td><td>'.$rowWalletHistory['walletNameFrom'].'</td>';
+					echo'<tr class="allWalletHistoryRows '.$rowWalletHistory['walletNameFrom'].'WalletDetails '.$rowWalletHistory['walletNameTo'].'WalletDetails">
+						<td>'.date('d-M-Y (D)',strtotime($rowWalletHistory['walletTransferDate'])).'</td>';
+						echo'<td style="';
+						if($rowWalletHistory['type']=='expense'){echo ' color:red';}
+						else if($rowWalletHistory['type']=='income'){echo' color:green';}
+						else{echo ' color:blue';}
+						echo' "> &#8377;'.number_format($rowWalletHistory['walletValue']).'</td>';
+						echo'<td>'.$rowWalletHistory['walletNameFrom'].'</td>';
 						if($rowWalletHistory['walletNameTo']=='walletExpenseOK'){echo'<td>-</td>';}else{echo'<td>'.$rowWalletHistory['walletNameTo'].'</td>';}
-						echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td>';
 						if($rowWalletHistory['type']=='walletTransfer'){
-							echo'<td>-</td>
+							echo'<td>Wallet Transfer</td>
 							<td>-</td><td>-</td>';
 						}else{
 							echo'<td>'.$rowWalletHistory['type'].'</td>
 							<td>'.$rowWalletHistory['category'].'</td><td>'.$rowWalletHistory['details'].'</td>';
 						}
-						echo'<td><button class = "expensesDeleteButton" onclick="deleteWalletHistory('.$rowWalletHistory['id'].')">Delete</button></td>
+						echo'<td><button class = "expensesEditButton" onclick="editWalletHistory('.$rowWalletHistory['id'].')">Edit</button></td>
+						<td><button class = "expensesDeleteButton" onclick="deleteWalletHistory('.$rowWalletHistory['id'].')">Delete</button></td>
 					</tr>';
 				}
 			echo'</tbody>

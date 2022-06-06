@@ -160,43 +160,43 @@
 					$yesterdayMonth = date('m',strtotime("-1 day", time()));
 					$yesterdayYear = date('Y',strtotime("-1 day", time()));
 					/*Calculate Today Expenses*/
-					$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
-					$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+					$getTodayExpense = mysqli_query($conn,"SELECT SUM(amount) AS todayExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+					$getTodayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
 					if(mysqli_num_rows($getTodayExpenseCount)>0){while($rowTodayExpense = mysqli_fetch_assoc($getTodayExpense)){$totalTodayExpenses = $rowTodayExpense['todayExpense'];}}
 
 					/*Calculate Today Incomes*/
-					$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
-					$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+					$getTodayIncome = mysqli_query($conn,"SELECT SUM(amount) AS todayIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
+					$getTodayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$todayDate' ORDER BY id DESC");
 					if(mysqli_num_rows($getTodayIncomeCount)>0){while($rowTodayIncome = mysqli_fetch_assoc($getTodayIncome)){$totalTodayIncome = $rowTodayIncome['todayIncome'];}}
 
 					/*Calculate Yesterday Expenses*/
-					$getYesterdayExpense = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
-					$getYesterdayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+					$getYesterdayExpense = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+					$getYesterdayExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
 					if(mysqli_num_rows($getYesterdayExpenseCount)>0){while($rowYesterdayExpense = mysqli_fetch_assoc($getYesterdayExpense)){$totalYesterdayExpenses = $rowYesterdayExpense['yesterdayExpense'];}}
 
 					/*Calculate Yesterday Incomes*/
-					$getYesterdayIncome = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayIncome FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
-					$getYesterdayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+					$getYesterdayIncome = mysqli_query($conn,"SELECT SUM(amount) AS yesterdayIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
+					$getYesterdayIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND date = '$yesterdayDate' ORDER BY id DESC");
 					if(mysqli_num_rows($getYesterdayIncomeCount)>0){while($rowYesterdayIncome = mysqli_fetch_assoc($getYesterdayIncome)){$totalYesterdayIncome = $rowYesterdayIncome['yesterdayIncome'];}}
 
 					/*Calculate Month's Expenses*/
-					$getThisMonthExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-					$getThisMonthExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisMonthExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisMonthExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 					if(mysqli_num_rows($getThisMonthExpenseCount)>0){while($rowThisMonthExpense = mysqli_fetch_assoc($getThisMonthExpense)){$totalThisMonthExpenses = $rowThisMonthExpense['thisMonthExpense'];}}
 
 					/*Calculate Month's Incomes*/
-					$getThisMonthIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthIncome FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-					$getThisMonthIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisMonthIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisMonthIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisMonthIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND MONTH(date) = '$thisMonth' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 					if(mysqli_num_rows($getThisMonthIncomeCount)>0){while($rowThisMonthIncome = mysqli_fetch_assoc($getThisMonthIncome)){$totalThisMonthIncome = $rowThisMonthIncome['thisMonthIncome'];}}
 
-					/*Calculate Month's Expenses*/
-					$getThisYearExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisYearExpense FROM expenses WHERE type = 'expense' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-					$getThisYearExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					/*Calculate Year's Expenses*/
+					$getThisYearExpense = mysqli_query($conn,"SELECT SUM(amount) AS thisYearExpense FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisYearExpenseCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 					if(mysqli_num_rows($getThisYearExpenseCount)>0){while($rowThisYearExpense = mysqli_fetch_assoc($getThisYearExpense)){$totalThisYearExpenses = $rowThisYearExpense['thisYearExpense'];}}
 
 					/*Calculate This Year's Incomes*/
-					$getThisYearIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisYearIncome FROM expenses WHERE type = 'income' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
-					$getThisYearIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisYearIncome = mysqli_query($conn,"SELECT SUM(amount) AS thisYearIncome FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
+					$getThisYearIncomeCount = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' AND YEAR(date) = '$thisYear' ORDER BY id DESC");
 					if(mysqli_num_rows($getThisYearIncomeCount)>0){while($rowThisYearIncome = mysqli_fetch_assoc($getThisYearIncome)){$totalThisYearIncome = $rowThisYearIncome['thisYearIncome'];}}
 
 					/*Show Marquee*/
@@ -223,12 +223,23 @@
 					}
 					echo '
 					<div id="walletActionDiv">
-						<button type="button" id="showWalletButtons" class="basicButtonOuter smallButton" onclick="showWalletButtons()">Wallet Details</button>
-					</div>
+						<button type="button" id="showWalletButtons" class="basicButtonOuter smallButton" onclick="showWalletButtons()">Wallet Details</button>';
+						/*Update for adding data from wallethistory to expense*/
+						$sqlChkVer=mysqli_query($conn,"SELECT * FROM version WHERE username='$username'");
+						if(mysqli_num_rows($sqlChkVer)>0){
+							while($rowChkVer=mysqli_fetch_assoc($sqlChkVer)){
+								if($rowChkVer['version']!='2.0'){
+									echo'<button type="button" id="updateWebsiteButton" class="greenButton smallButton" onclick="updateWebsite()">Update</button>';
+								}
+							}
+						}else{
+							echo'<button type="button" id="updateWebsiteButton" class="greenButton smallButton" onclick="updateWebsite()">Update</button>';
+						}
+					echo'</div>
 					<div class="flexDisplay" id="walletButtons">
 						<button type="button" id="addWalletButton" class="greenButtonOuter smallButton" onclick="showWalletDiv(\''."addWalletData".'\')">Add New Wallet</button>
-						<button type="button" id="showWalletDataButton" class="basicButtonOuter smallButton" onclick="showWalletDiv(\''."allWalletList".'\')">Show Wallet Amount</button>
 						<button type="button" id="addWalletMoneyButton" class="greenButtonOuter smallButton" onclick="showWalletDiv(\''."addMoneyToWallet".'\')">Transfer Money to Wallet</button>
+						<button type="button" id="showWalletDataButton" class="basicButtonOuter smallButton" onclick="showWalletDiv(\''."allWalletList".'\')">Show Wallet Amount</button>
 						<button type="button" id="walletHistoryButton" class="greenButtonOuter smallButton" onclick="showWalletDiv(\''."walletHistory".'\')">Wallet History</button>
 					</div>
 					<div id="addWalletData">
@@ -238,45 +249,11 @@
 						<div id="walletErrorMessage"></div>
 						<div>
 							<button type="button" id="walletSubmit" class="submitButton" onclick="addWallet()">ADD</button>
-							<button type="button" class="closeButton noDisplay" onclick="closeWalletDiv()">CLOSE</button>
-						</div><br>';
-	/*					echo'<div id="currentWalletsList">';
-							$walletCheck=mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername='$username'");
-							if(mysqli_num_rows($walletCheck)>0){
-								echo'<u>Current Wallets: </u><br><br>
-								<div id="currentWallets">';
-									while($rowWallets=mysqli_fetch_assoc($walletCheck)){
-										echo '<div class="eachCurrentWallet">
-											'.$rowWallets['walletName'].'<hr>
-											<button class="basicButtonOuter smallButton" onclick="showEditWallet(\''.$rowWallets['id'].'\')">edit</button><br>
-											<button class="redButtonOuter smallButton" onclick="showDeleteWallet(\''.$rowWallets['id'].'\')">delete</button>
-										</div>';
-									}
-								echo'</div>';
-							}else{
-								echo 'No wallets registered!';
-							}
-						echo'</div>';	
-*/					echo'<br></div>
+							<button type="button" class="closeButton" onclick="showWalletButtons()">CLOSE</button>
+						</div><br>';	
+					echo'<br></div>
 					<div id="allWalletList">';
 						$walletCheck=mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername='$username'");
-						if(mysqli_num_rows($walletCheck)>0){
-							echo'<br><u>Wallet Info:</u><br><br>
-							<div id="currentWallets">';
-								while($rowWallets=mysqli_fetch_assoc($walletCheck)){
-									echo '<div class="eachCurrentWallet">
-										<div>'.$rowWallets['walletName'].'</div><hr> &#8377;'.number_format($rowWallets['walletValue']).'<br><br>
-										<div>
-											<button class="basicButtonOuter smallButton" onclick="showEditWallet(\''.$rowWallets['id'].'\')">edit</button>
-											<button class="redButtonOuter smallButton" onclick="showDeleteWallet(\''.$rowWallets['id'].'\')">delete</button>
-										</div>
-									</div>';
-								}
-							echo'</div>';
-							echo'<br><button type="button" class="closeButton noDisplay" onclick="closeWalletDiv()">CLOSE</button><br><br>';
-						}else{
-							echo'<br>No wallets registered.<br>';
-						}
 					echo '</div>';
 					/*Wallet amount transfers*/
 					echo'<div id="addMoneyToWallet">';
@@ -294,10 +271,11 @@
 									echo '<option value="'.$rowWallets['walletName'].'">'.$rowWallets['walletName'].'</option>';
 								}	
 							echo'</select><br>
+							<input type="date" id="walletTransferDate" class="expenseInput inputStyle" value="'.$todayDate.'">
 							&#8377;<input type="number" min="0" max="9999999" id="walletExchangeAmount" class="inputStyle" placeholder="Amount"><br>
 							<div id="walletExchangeErrorMessage"></div>
 							<button type="button" id="walletExchangeSubmit" class="submitButton" onclick="walletExchange()">SEND</button>
-							<button type="button" class="closeButton noDisplay" onclick="closeWalletDiv()">CLOSE</button><br><br>';
+							<button type="button" class="closeButton" onclick="showWalletButtons()">CLOSE</button><br><br>';
 						}else{
 							if(mysqli_num_rows($walletCheck)<1){echo 'No wallets registered.';}
 							else{echo'<br>Minimum of 2 wallets required to transfer amount!<br><br>';}
@@ -305,37 +283,7 @@
 					echo'</div>';
 					/*Wallet History*/
 					echo'<div id="walletHistory">';
-					$walletCheckHistory=mysqli_query($conn,"SELECT * FROM wallethistory WHERE walletUsername='$username' ORDER BY walletTransferDate DESC");
-						if(mysqli_num_rows($walletCheckHistory)>0){
-							echo'<div class="tableContainer"><table class="analysisTable">
-								<thead>
-									<tr>
-										<th>Date of Transfer</th><th>Transfer From</th><th>Transfer To</th><th>Amount Transfered</th><th>Expense / Income</th><th>Category</th><th>Details</th><th>Edit</th><th>Delete</th>
-									</tr>
-								</thead>
-								<tbody>';
-									while($rowWalletHistory=mysqli_fetch_assoc($walletCheckHistory)){
-										echo'<tr>
-											<td>'.date('d-M-Y (l)',strtotime($rowWalletHistory['walletTransferDate'])).'</td><td>'.$rowWalletHistory['walletNameFrom'].'</td>';
-											if($rowWalletHistory['walletNameTo']=='walletExpenseOK'){echo'<td>-</td>';}else{echo'<td>'.$rowWalletHistory['walletNameTo'].'</td>';}
-											echo'<td>&#8377;'.number_format($rowWalletHistory['walletValue']).'</td>';
-											if($rowWalletHistory['type']=='walletTransfer'){
-												echo'<td>-</td>
-												<td>-</td><td>-</td>';
-											}else{
-												echo'<td>'.$rowWalletHistory['type'].'</td>
-												<td>'.$rowWalletHistory['category'].'</td><td>'.$rowWalletHistory['details'].'</td>';
-											}
-											echo'<td><button class = "expensesEditButton" onclick="editWalletHistory('.$rowWalletHistory['id'].')">Edit</button></td>
-												<td><button class = "expensesDeleteButton" onclick="deleteWalletHistory('.$rowWalletHistory['id'].')">Delete</button></td>
-										</tr>';
-									}
-								echo'</tbody>
-								</table>
-							</div>';
-						}else{
-							echo 'No transactions found.';
-						}
+						$walletCheckHistory=mysqli_query($conn,"SELECT * FROM wallethistory WHERE walletUsername='$username' ORDER BY walletTransferDate DESC");
 					echo'<br><br></div>';
 				echo'</div>';
 
@@ -373,7 +321,7 @@
 								$walletNameTrim=str_replace(' ', '', $rowWallet['walletName']);
 								echo '<span class="inlineBlockDiv"><input type="radio" id="expenseWallet'.$walletNameTrim.'" class="inputStyle" name="expenseWallet" value="'.$rowWallet['walletName'].'"><label for="expenseWallet'.$walletNameTrim.'">'.$rowWallet['walletName'].'</label></span>';
 							}
-							echo'<span class="inlineBlockDiv"><input type="radio" id="expenseWalletCash" class="inputStyle" name="expenseWallet" value="cash"><label for="expenseWalletCash">Cash</label></span>
+							echo'<span class="inlineBlockDiv"><input type="radio" id="expenseWalletCash" class="inputStyle" name="expenseWallet" value="cash"><label for="expenseWalletCash">Others</label></span>
 							<span class="inlineBlockDiv"><a href="#marquee" type="button" class="greenButtonOuter smallButton" onclick="showWalletDiv(\''."addWalletData".'\')">New Wallet</a></span>';
 						}
 						echo'</div>';
@@ -414,7 +362,7 @@
 								$walletNameTrim=trim($rowWallet['walletName']);
 								echo '<span class="inlineBlockDiv"><input type="radio" id="incomeWallet'.$walletNameTrim.'" class="inputStyle" name="incomeWallet" value="'.$rowWallet['walletName'].'"><label for="incomeWallet'.$walletNameTrim.'">'.$rowWallet['walletName'].'</label></span>';
 							}
-							echo'<span class="inlineBlockDiv"><input type="radio" id="incomeWalletCash" class="inputStyle" name="incomeWallet" value="Cash"><label for="incomeWalletCash">Cash</label></span>
+							echo'<span class="inlineBlockDiv"><input type="radio" id="incomeWalletCash" class="inputStyle" name="incomeWallet" value="Cash"><label for="incomeWalletCash">Others</label></span>
 							<a href="#marquee" type="button" class="greenButtonOuter smallButton" onclick="showWalletDiv(\''."addWalletData".'\')">New Wallet</a>';
 						}
 						echo'</div>';
@@ -435,7 +383,7 @@
 				<?php
 
 				/*Get all Expenses*/
-				$getExpense = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND username = '$username' ORDER BY id DESC");
+				$getExpense = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'expense' AND category != 'walletTransfer' AND username = '$username' ORDER BY id DESC");
 				$totalExpenses = 0;
 				if(mysqli_num_rows($getExpense)>0){
 					while($rowExpense = mysqli_fetch_assoc($getExpense)){
@@ -444,7 +392,7 @@
 				}
 
 				/*Get all Incomes*/
-				$getIncome = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND username = '$username' ORDER BY id DESC");
+				$getIncome = mysqli_query($conn,"SELECT * FROM expenses WHERE type = 'income' AND category != 'walletTransfer' AND username = '$username' ORDER BY id DESC");
 				$totalIncome = 0;
 				if(mysqli_num_rows($getIncome)>0){
 					while($rowIncome = mysqli_fetch_assoc($getIncome)){
@@ -511,7 +459,7 @@
 								<tbody><tr>
 								<td style="position:sticky;left:0px;z-index:2">'.date('M-Y', mktime(0, 0, 0, $monthOfAnalysis, 1, $yearOfAnalysis)).'</td>';
 								/*Get Totals Expense*/	
-								$getTotalsExpense = mysqli_query($conn, "SELECT SUM(CASE WHEN username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalExpenseAmount, SUM(CASE WHEN username = '$username' AND type = 'income' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalIncomeAmount, SUM(CASE WHEN category = 'food' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalFood, SUM(CASE WHEN category = 'market' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalMarket, SUM(CASE WHEN category = 'travel' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalTravel, SUM(CASE WHEN category = 'petrol' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalPetrol, SUM(CASE WHEN category = 'houseWorks' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalHouseWorks, SUM(CASE WHEN category = 'health' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalHealth, SUM(CASE WHEN category = 'education' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalEducation, SUM(CASE WHEN category = 'personal' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalPersonal, SUM(CASE WHEN category = 'office' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalOffice, SUM(CASE WHEN category = 'savings' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalSavings, SUM(CASE WHEN (category != 'food' AND category != 'market' AND category != 'travel' AND category != 'petrol' AND category != 'houseWorks' AND category != 'health' AND category != 'education' AND category != 'personal' AND category != 'savings' AND category != 'office') AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalOthers FROM expenses");
+								$getTotalsExpense = mysqli_query($conn, "SELECT SUM(CASE WHEN username = '$username' AND type = 'expense' AND category != 'walletTransfer' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalExpenseAmount, SUM(CASE WHEN username = '$username' AND type = 'income' AND category != 'walletTransfer' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalIncomeAmount, SUM(CASE WHEN category = 'food' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalFood, SUM(CASE WHEN category = 'market' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalMarket, SUM(CASE WHEN category = 'travel' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalTravel, SUM(CASE WHEN category = 'petrol' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalPetrol, SUM(CASE WHEN category = 'houseWorks' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalHouseWorks, SUM(CASE WHEN category = 'health' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalHealth, SUM(CASE WHEN category = 'education' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalEducation, SUM(CASE WHEN category = 'personal' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalPersonal, SUM(CASE WHEN category = 'office' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalOffice, SUM(CASE WHEN category = 'savings' AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalSavings, SUM(CASE WHEN (category != 'food' AND category != 'market' AND category != 'travel' AND category != 'petrol' AND category != 'houseWorks' AND category != 'health' AND category != 'education' AND category != 'personal' AND category != 'savings' AND category != 'office') AND username = '$username' AND type = 'expense' AND month(date) = '$monthOfAnalysis' AND year(date) = '$yearOfAnalysis' THEN amount END) AS totalOthers FROM expenses");
 								if(mysqli_num_rows($getTotalsExpense)>0){
 									while($rowTotalsExpense = mysqli_fetch_assoc($getTotalsExpense)){
 										echo '
@@ -668,7 +616,7 @@
 				/*Graphs*/
 				/*Data Accumulation*/
 				/*Get each month*/
-				$getEachExpenseMonth = mysqli_query($conn, "SELECT DISTINCT month(date) AS month, year(date) AS year FROM expenses WHERE username = '$username' AND type='expense' ORDER BY date DESC");
+				$getEachExpenseMonth = mysqli_query($conn, "SELECT DISTINCT month(date) AS month, year(date) AS year FROM expenses WHERE username = '$username' AND type='expense' AND category != 'walletTransfer' ORDER BY date DESC");
 				if(mysqli_num_rows($getEachExpenseMonth)>0){
 					echo '<div id = "contentGraphForm">
 						<div class = "headingName bufferMessage">Graphical Representations: </div>';
@@ -679,7 +627,7 @@
 						$yearOfGraph = $EachExpenseMonth['year'];
 						$monthWordOfGraph = date('M-Y', mktime(0, 0, 0, $monthOfGraph, 1, $yearOfGraph));
 
-						$getMonthExpenses=mysqli_query($conn,"SELECT * FROM expenses WHERE month(date)='$monthOfGraph' AND year(date)='$yearOfGraph' AND username = '$username' AND type='expense' ORDER BY date ASC");
+						$getMonthExpenses=mysqli_query($conn,"SELECT * FROM expenses WHERE month(date)='$monthOfGraph' AND year(date)='$yearOfGraph' AND username = '$username' AND type='expense' AND category != 'walletTransfer' ORDER BY date ASC");
 						if(mysqli_num_rows($getMonthExpenses)>0){$dateCheck=1;$largestExpenseInMonth=0;$largestExpenseInMonthSpecificDate=0;$averageExpenseInMonthTotal=0;$averageExpenseInMonth=0;$averageExpenseInMonthCount=1;
 							
 							while($rowMonthExpense=mysqli_fetch_assoc($getMonthExpenses)){
@@ -711,7 +659,7 @@
 							/*Average Expense*/
 							$averageExpenseInMonth=$averageExpenseInMonthTotal/($averageExpenseInMonthCount-1);
 							/*Overall Expense*/
-							$getOverallExpenseInMonth=mysqli_query($conn,"SELECT SUM(amount) AS totalExpenseAmount FROM expenses WHERE username = '$username' AND type = 'expense' AND month(date) = '$monthOfGraph' AND year(date) = '$yearOfGraph'");
+							$getOverallExpenseInMonth=mysqli_query($conn,"SELECT SUM(amount) AS totalExpenseAmount FROM expenses WHERE username = '$username' AND type = 'expense' AND category != 'walletTransfer' AND month(date) = '$monthOfGraph' AND year(date) = '$yearOfGraph'");
 							if(mysqli_num_rows($getOverallExpenseInMonth)>0){
 								while($rowOverallExpenseInMonth=mysqli_fetch_assoc($getOverallExpenseInMonth)){
 									$overallExpenseInMonth=$rowOverallExpenseInMonth['totalExpenseAmount'];
