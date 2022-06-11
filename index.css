@@ -353,7 +353,7 @@ label{user-select: none;}
 .expenditureButton{border: solid rgba(230, 120, 120, 1);border-width: 5px 20px 5px 20px;}
 .incomeButton{border: solid rgba(120, 230, 120, 1);border-width: 5px 20px 5px 20px;}
 .budgetButton{border: solid rgba(120, 120, 230, 1);border-width: 5px 20px 5px 20px;}
-#searchDiv, #filterDiv{
+#searchDiv, #filterDiv, #statementDiv{
 	display: none;
 	padding: 10px;
 	animation: fadeZoom1 1s ease-in-out;
@@ -466,6 +466,10 @@ th{background-color: lightblue;}
 .analysisTable{
 	border-collapse: collapse;
 	margin-left: auto;margin-right: auto;
+}
+.analysisTable td{
+	column-width:200px;
+	white-space:normal;
 }
 .analysisSubDiv{
 	width: 50%;

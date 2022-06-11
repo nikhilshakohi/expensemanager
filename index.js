@@ -120,7 +120,7 @@ function signup(){
 
 /*Login*/
 function login(){
-	document.getElementById("loginPassword").focus();
+	document.getElementById("loginUsername").focus();
 	var username = document.getElementById("loginUsername").value;
 	var password = document.getElementById("loginPassword").value;
 	document.getElementById("loginButton").innerHTML = "<div class='loaderButton'></div>";
@@ -524,6 +524,9 @@ function hideListDivs(){
 	if(document.getElementById('budgetListDiv')){
 		document.getElementById('budgetListDiv').innerHTML = "";
 	}
+	if(document.getElementById('statementListDiv')){
+		document.getElementById('statementListDiv').innerHTML = "";
+	}
 }
 
 
@@ -618,8 +621,11 @@ function toggleSubLowerListDiv(type, listType, dateInNumberFormat){
 
 /*Toggle Search, Filter Div*/
 function showFilters(type){
-	if(type == 'search'){document.getElementById("filterDiv").style.display = "none"; }
-	if(type == 'filter'){document.getElementById("searchDiv").style.display = "none"; }
+	//Clear old state
+	if(type == 'search'){document.getElementById("filterDiv").style.display = "none";document.getElementById("statementDiv").style.display = "none"; }
+	if(type == 'filter'){document.getElementById("searchDiv").style.display = "none";document.getElementById("statementDiv").style.display = "none"; }
+	if(type == 'statement'){document.getElementById("searchDiv").style.display = "none";document.getElementById("filterDiv").style.display = "none"; }
+	//Setting State
 	if(document.getElementById(type+"Div").style.display == "block"){
 		document.getElementById(type+"Div").style.display = "none";
 	}else{
@@ -635,6 +641,8 @@ function showFilters(type){
 			})
 		}else if(type == 'filter'){
 			document.getElementById("filterFromDate").focus();
+		}else if(type == 'statement'){
+			document.getElementById("statementFromDate").focus();
 		}
 		/*To prevent automatic scroll while focussing*/
 		/*var x = window.scrollX; var y = window.scrollY;
@@ -1441,6 +1449,36 @@ function filterWalletHistory(wallet){
 	}else{
 		for(var i = 0; i < allRows.length; i++){
 			allRows[i].style.display = "table-row";
+		}
+	}
+}
+
+/*Statement Div*/
+function getStatementResults(){
+	var fromDate = document.getElementById("statementFromDate").value;
+	var toDate = document.getElementById("statementToDate").value;
+	var username = document.getElementById("username").value;
+	document.getElementById("statementResults").innerHTML = "<div class = 'loaderButton'></div>";
+	/*AJAX Functionality*/
+	/*Declare variables*/
+	var statementExpenses = "RandomInput";
+	var data = "statementExpenses="+statementExpenses+"&fromDate="+fromDate+"&toDate="+toDate+"&username="+username;
+	/*Declare XML*/
+	if(window.XMLHttpRequest){var xhr = new XMLHttpRequest();}
+	else if(window.ActiveXObject){var xhr = new ActiveXObject("Microsoft.XMLHTTP");}
+	/*AJAX Methods*/
+	xhr.open("POST","conditions.php",true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.send(data);
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState == 4){
+			if(xhr.status == 200){
+				document.getElementById("statementResults").innerHTML = this.responseText;
+			    var table2excel = new Table2Excel(); //External function
+		        table2excel.export(document.getElementById('statementTable')); //External function
+		        document.getElementById("downloadStatementButton").innerHTML="File Downloaded";
+		        setTimeout(function(){document.getElementById("downloadStatementButton").innerHTML = "Download";},2500);
+			}
 		}
 	}
 }

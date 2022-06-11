@@ -62,7 +62,7 @@ session_start();
 						</div>
 					<h4>About the developer:</h4>
 					<li style="list-style-type:circle">Developed by <a style="color:blue" target="_blank" href="https://github.com/nikhilshakohi">Nikhil Shakohi.</a></li>
-					<li style="list-style-type:circle">Site Version v5.2 <small>(30-05-2022)</small></li>
+					<li style="list-style-type:circle">Site Version v5.4 <small>(11-06-2022)</small></li>
 					<br><br><br>
 				</div>
 			</div>

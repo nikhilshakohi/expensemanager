@@ -10,6 +10,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="google-site-verification" content="M6Wbpyq5eHZattL1_fqsV8HxSLz8T_U1UlUppkvfLtU" /> <!--Google Verification-->
+	<script src="table2excel.js"></script><!--Download Table-->
 	<link rel="stylesheet" type="text/css" href="index.css">
 	<meta name="theme-color" content="#323232">
 	<link rel="apple-touch-icon" href="logo.png">
@@ -105,6 +106,7 @@
 				<button class="searchButton budgetButton" onclick="showBudget()">Transactions</button>
 				<div><button class="searchButton" onclick="showFilters('search')">Search</button>
 				<button class="searchButton filterButton" onclick="showFilters('filter')">Filter</button></div>
+				<button class="searchButton filterButton" onclick="showFilters('statement')">Get Statement</button>
 			</div>
 
 			<div id="allDetailsDiv">
@@ -137,6 +139,18 @@
 					<div class="filterInputs">To: <input id="filterToDate" class="filterInputDate" type="date"></div><br>
 					<button type="button" class="submitButton" onclick="getFilterResults()">Submit</button>
 					<div id="filterResults"></div>
+				</div>
+				<!--Download Statement-->
+				<div id="statementDiv">
+					<div class = "expensesListHeading">
+						<div class = "listMainHeadingName">Statement </div>
+						<div class = "closeButton" onclick = "showFilters('statement')">Close</div>
+					</div>
+					<div class="budgetList">Select the dates whose statement you want to download (inc)</div><br>
+					<div class="filterInputs">From: <input id="statementFromDate" class="filterInputDate" type="date"></div>
+					<div class="filterInputs">To: <input id="statementToDate" class="filterInputDate" type="date"></div><br>
+					<button id="downloadStatementButton" type="button" class="submitButton" onclick="getStatementResults()">Download</button>
+					<div id="statementResults"></div>
 				</div>
 			</div>
 			

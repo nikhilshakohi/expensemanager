@@ -1133,6 +1133,85 @@ if (isset($_POST['updateWalletDetails'])) {
 	getWalletHistory($conn,$username);
 }
 
+/*Statement Expenses*/
+if(isset($_POST['statementExpenses'])){
+	$fromDate = mysqli_real_escape_string($conn, $_POST['fromDate']);
+	$toDate = mysqli_real_escape_string($conn, $_POST['toDate']);
+	$username = $_POST['username'];
+	$statementExpenses = mysqli_query($conn, "SELECT * FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (username = '$username') AND (category!='walletTransfer') ORDER BY date DESC, id DESC");
+	$totalStatementExpenses = mysqli_query($conn, "SELECT SUM(amount) AS statementExpense FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'expense') AND (username = '$username') AND (category!='WalletTransfer') ORDER BY date DESC, id DESC");
+	$totalStatementIncome = mysqli_query($conn, "SELECT SUM(amount) AS statementIncome FROM expenses WHERE (date BETWEEN '$fromDate' AND '$toDate') AND (type = 'income') AND (username = '$username') AND (category!='WalletTransfer') ORDER BY date DESC, id DESC");
+	$OverallStatementExpenses = 0; $OverallStatementIncome=0; //Initial value
+	if(mysqli_num_rows($totalStatementExpenses)>0){
+		while($rowTotalStatementExpenses=mysqli_fetch_assoc($totalStatementExpenses)){
+			$OverallStatementExpenses = $rowTotalStatementExpenses['statementExpense'];
+		}
+	}
+	if(mysqli_num_rows($totalStatementIncome)>0){
+		while($rowTotalStatementIncome=mysqli_fetch_assoc($totalStatementIncome)){
+			$OverallStatementIncome = $rowTotalStatementIncome['statementIncome'];
+		}
+	}
+	if(mysqli_num_rows($statementExpenses)>0){
+		echo '<div id = "statementListDiv">
+		<div class = "expensesListHeading">
+			<div class = "listMainHeadingName">Statement List </div>
+			<div class = "closeButton" onclick = "hideListDivs()">Close</div>
+		</div>
+		<div class="tableContainer"><table id="statementTable" class="analysisTable">
+		<thead>
+			<tr><th colspan="7" style="text-align:center">Statement from '.date('d-M-Y',strtotime($fromDate)).' to '.date('d-M-Y',strtotime($toDate)).'</th></tr>
+			<tr><td colspan="7">Total Expenditure: &#8377;'.number_format($OverallStatementExpenses).'</td></tr>
+			<tr><td colspan="7">Total Income: &#8377;'.number_format($OverallStatementIncome).'</td></tr>';
+			//Get all wallet values
+			echo'
+			<tr><td colspan="7"></td></tr>
+			<tr><th colspan="7">Current Wallet Info: </th></tr>
+			<tr><td colspan="7">';
+			$walletCheck=mysqli_query($conn,"SELECT * FROM wallet WHERE walletUsername='$username'");
+			if(mysqli_num_rows($walletCheck)>0){
+				while($rowWallets=mysqli_fetch_assoc($walletCheck)){
+					echo $rowWallets['walletName'].' - &#8377;'.number_format($rowWallets['walletValue']).'</td></tr><tr><td colspan="7">';
+				}
+			}else{
+				echo 'No wallets details found!';
+			}
+			echo'</td></tr>
+			<tr><td colspan="7"></td></tr>
+			
+			<tr>
+				<th>Sl No.</th><th>Date</th><th>Category</th><th>Money</th><th>Details</th><th>Type</th><th>Wallet</th>
+			</tr>
+		</thead>
+		<tbody>';
+
+		$scount=1;
+		while($rowStatement = mysqli_fetch_assoc($statementExpenses)){
+			echo '<tr>
+				<td>'.$scount.'</td>
+				<td style="width:150px">'.date('d-M-Y (D)', strtotime($rowStatement['date'])).'</td><td>'.ucwords($rowStatement['category']).'</td>
+				<td>&#8377;<span ';
+					if($rowStatement['type'] == 'income'){
+						echo ' class = "successMessage"';
+					}else{
+						echo ' class = "errorMessage"';
+					}
+					echo ' >'.number_format($rowStatement['amount']).'
+				</span></td>
+				<td>'.$rowStatement['details'].'</td>
+				<td>'.ucwords($rowStatement['type']).'</td>';
+				if($rowStatement['wallet']!=''&&$rowStatement['wallet']!='noWalletRegd'){echo'<td>'.$rowStatement['wallet'].'</td>';}else{echo'<td>-</td>';}
+			echo'</tr>';
+			$scount++;
+		}
+		echo'</tbody>
+		</table></div>';
+		//echo 'FileDownloaded';
+	}else{
+		echo 'NoDataFound';
+	}
+}
+
 /*Income or Expense Checker*/
 function checkIncomeOrExpense($id,$conn){
 	$checkIE = mysqli_query($conn, "SELECT * FROM expenses WHERE id = '$id'");
